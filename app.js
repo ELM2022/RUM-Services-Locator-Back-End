@@ -62,6 +62,10 @@ app.use(header, adminUpdatesRoutes);
 app.use(header, authRoutes);
 // app.use('/RUMSL', testRoutes);
 
+app.use(header, (req, res) => {
+    res.send("Welcome to the RUM Services Locator app!");
+});
+
 // STARTING UP LOCAL SERVER
 app.listen(port, () => {
     console.log(`Server listening on port ${port}!`)
