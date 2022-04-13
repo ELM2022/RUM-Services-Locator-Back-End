@@ -1,9 +1,9 @@
 const db = require('../configs/db').pool;
-const path = require('path');
+// const path = require('path');
 const nodemailer = require('nodemailer');
 const SMTPTransport = require("nodemailer/lib/smtp-transport");
 
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+// require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 const sendEmail = (email, subject, text) => {
     try {
@@ -67,11 +67,12 @@ const emailPasswReset = async(email, token) => {
         
         if (admin_email !== undefined && admin_name !== undefined) {
 
-            const link = `${process.env.SERVER_URL}/reset/${token}`;
+            const url = (process.env.NODE_ENV === "production") ? process.env.SERVER_URL_PROD : process.env.SERVER_URL_DEV;
+            const link = `${url}/reset/${token}`;
             const subject = "RUM Services Locator: Restablecer Contraseña";
             const text = `Hola ${admin_name},\nPor favor haga 'click' en el siguiente enlace para restablecer su contraseña.\n\nEnlace: ${link}\n`;
             
-            await sendEmail(admin_email, subject, text);
+            sendEmail(admin_email, subject, text);
 
         }
         else {

@@ -5,10 +5,11 @@ const { emailVerification, emailPasswReset, emailResetConfirmation } = require('
 const login = async (req, res) => {
     try {
         req.session.token = generateAuthToken();
-        await emailVerification(req).then(() => {
-            // FOR TESTING PURPOSES
-            res.redirect('http://localhost:3000/RUMSL/login-validate');
-        });
+        // await emailVerification(req).then(() => {
+        //     // FOR TESTING PURPOSES
+        //     res.redirect('http://localhost:3000/RUMSL/login-validate');
+        // });
+        await emailVerification(req);
 
     } catch (error) {
         console.log(error);
@@ -55,25 +56,6 @@ const recoverPassword = async(req, res) => {
         })
         .catch(error => res.status(500).json({ message: error.message }));
 
-        // const [result] = await db.promise().query("SELECT * FROM Administrator WHERE admin_email = ?", [admin_email]);
-
-        // if (result !== undefined) {
-        //     const admin = result[0];
-        //     const password_reset = generatePasswReset();
-        //     admin.reset_passw_token = password_reset.token;
-        //     admin.reset_passw_expires = password_reset.expiration;
-
-        //     await db.promise().query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id])
-        //     .then(() => {
-        //         emailPasswReset(admin.admin_email, admin.reset_passw_token);
-        //     })
-        //     .catch(err => res.status(500).json({ message: err.message }));
-
-        // }
-        // else {
-        //     res.status(401).json("Admin email not found.");
-        // }
-
     } catch (error) {
         console.log(error);
     }
@@ -84,15 +66,15 @@ const validatePasswReset = async(req, res) => {
         await db.promise().query("SELECT * FROM Administrator WHERE reset_passw_token = ? AND reset_passw_expires >= ?", [req.params.token, new Date(Date.now())])
         .then(result => {
             if (result[0] !== undefined) {
-                // res.status(200).json("Password reset validated.");
+                res.status(200).json("Password reset validated.");
 
                 // FOR TESTING PURPOSES
-                const form = `<h1>Reset Password Page</h1><form method="POST" action="http://localhost:3000/RUMSL/reset/${req.params.token}">\
-                Enter Password:<br><input type="password" name="admin_password">\
-                <br>Confirm Password:<br><input type="password" name="confirm_password">\
-                <br><br><input type="submit" value="Submit"></form>`;
+                // const form = `<h1>Reset Password Page</h1><form method="POST" action="http://localhost:3000/RUMSL/reset/${req.params.token}">\
+                // Enter Password:<br><input type="password" name="admin_password">\
+                // <br>Confirm Password:<br><input type="password" name="confirm_password">\
+                // <br><br><input type="submit" value="Submit"></form>`;
 
-                res.send(form);
+                // res.send(form);
 
             } else {
                 res.status(401).json("Password reset token is invalid or has expired.");

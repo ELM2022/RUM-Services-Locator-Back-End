@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
-const path = require('path');
+// const path = require('path');
 
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+// require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 const devConfig = {
     host: process.env.LOCAL_DB_HOST,
@@ -17,14 +17,11 @@ const prodConfig = {
     user: process.env.AZURE_DB_USER,
     password: process.env.AZURE_DB_PASSW,
     database: process.env.AZURE_DB,
-    connectionLimit: process.env.AZURE_DB_CONN_LIM,
 }
 
-const pool = mysql.createPool(devConfig);
-
-// const pool = mysql.createPool(
-//     process.env.NODE_ENV === "production" ? prodConfig : devConfig
-// );
+const pool = mysql.createPool(
+    process.env.NODE_ENV === "production" ? prodConfig : devConfig
+);
 
 module.exports = {
     pool,

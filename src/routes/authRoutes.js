@@ -7,10 +7,7 @@ const accountController = require('../controllers/accountController');
 const { validateRoute } = require('../middlewares/validateMiddleware');
 const { recoverPasswRules, resetPasswRules } = require('../middlewares/validationRules/accountValidation');
 
-router.post('/login', 
-    passport.authenticate('local'), accountController.login, (req, res) => {
-        res.redirect('RUMSL/login-validate');
-    });
+router.post('/login', passport.authenticate('local'), accountController.login);
 
 router.post('/register', adminController.addAdmin);
 router.post('/login/validate', accountController.validateLogin);

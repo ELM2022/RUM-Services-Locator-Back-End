@@ -14,11 +14,14 @@ const pendingAdminRoutes = require('./src/routes/pendingAdminRoutes');
 const officeUpdatesRoutes = require('./src/routes/officeUpdatesRoutes');
 const adminUpdatesRoutes = require('./src/routes/adminUpdatesRoutes');
 const authRoutes = require('./src/routes/authRoutes');
-const testRoutes = require('./src/routes/testRoutes');
+// const testRoutes = require('./src/routes/testRoutes');
 
 // GENERAL SETUP
-require('dotenv').config();
-const port = process.env.APP_PORT;
+// if (process.env.NODE_ENV === "development") {
+//     require('dotenv').config();
+// }
+const port = process.env.APP_PORT || 3000;
+const header = (process.env.NODE_ENV === "production") ? '/' : '/RUMSL';
 
 // CREATING CONNECTION POOL
 const pool = connection.pool;
@@ -50,14 +53,14 @@ app.use(passport.session());
 // });
 
 // ADDING ROUTES
-app.use('/RUMSL', buildingRoutes);
-app.use('/RUMSL', adminRoutes);
-app.use('/RUMSL', officeRoutes);
-app.use('/RUMSL', pendingAdminRoutes);
-app.use('/RUMSL', officeUpdatesRoutes);
-app.use('/RUMSL', adminUpdatesRoutes);
-app.use('/RUMSL', authRoutes);
-app.use('/RUMSL', testRoutes);
+app.use(header, buildingRoutes);
+app.use(header, adminRoutes);
+app.use(header, officeRoutes);
+app.use(header, pendingAdminRoutes);
+app.use(header, officeUpdatesRoutes);
+app.use(header, adminUpdatesRoutes);
+app.use(header, authRoutes);
+// app.use('/RUMSL', testRoutes);
 
 // STARTING UP LOCAL SERVER
 app.listen(port, () => {
