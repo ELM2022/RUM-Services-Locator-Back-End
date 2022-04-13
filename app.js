@@ -1,6 +1,7 @@
 // IMPORTING DEPENDENCIES
 const express = require('express');
 const session = require('express-session');
+const cors = require('cors');
 const passport = require('passport');
 const connection = require('./src/configs/db');
 const MySQLStore = require('express-mysql-session')(session);
@@ -30,6 +31,10 @@ const pool = connection.pool;
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
 
 // SESSION SETUP
 const sessionStore = new MySQLStore(connection.devConfig);
