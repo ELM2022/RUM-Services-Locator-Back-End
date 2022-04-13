@@ -20,7 +20,7 @@ const authRoutes = require('./src/routes/authRoutes');
 // if (process.env.NODE_ENV === "development") {
 //     require('dotenv').config();
 // }
-const port = process.env.APP_PORT || 3000;
+const port = process.env.PORT || 3000;
 const header = (process.env.NODE_ENV === "production") ? '/' : '/RUMSL';
 
 // CREATING CONNECTION POOL
