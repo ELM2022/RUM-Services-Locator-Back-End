@@ -1,5 +1,10 @@
 const { body } = require('express-validator');
-const db = require('../../configs/db').pool;
+
+const loginTokenRules = () => {
+    return [
+        body('token').notEmpty().isLength(6).isAlphanumeric().withMessage("Login token must be alphanumeric and have a length of 6 characters.")
+    ]
+}
 
 const recoverPasswRules = () => {
     return [
@@ -23,4 +28,5 @@ const resetPasswRules = () => {
 module.exports = {
     recoverPasswRules,
     resetPasswRules,
+    loginTokenRules
 }

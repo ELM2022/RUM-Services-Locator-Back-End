@@ -41,7 +41,7 @@ const emailVerification = async(req) => {
     try {
         const account = await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id]);
         const { admin_email, admin_name } = account[0][0]; 
-        const token = req.session.token;
+        const token = req.session.auth_token;
         
         if (admin_email !== undefined && admin_name !== undefined) {
 
@@ -67,11 +67,11 @@ const emailPasswReset = async(email, token) => {
         
         if (admin_email !== undefined && admin_name !== undefined) {
 
-            const link = `${process.env.SERVER_URL}/reset/${token}`;
+            const link = `${process.env.SERVER_URL_DEV}/reset/${token}`;
             const subject = "RUM Services Locator: Restablecer Contraseña";
             const text = `Hola ${admin_name},\nPor favor haga 'click' en el siguiente enlace para restablecer su contraseña.\n\nEnlace: ${link}\n`;
             
-            await sendEmail(admin_email, subject, text);
+            sendEmail(admin_email, subject, text);
 
         }
         else {
@@ -88,7 +88,7 @@ const emailResetConfirmation = async(email) => {
         const subject = "RUM Services Locator: Cambio de Contraseña";
         const text = `La contraseña para su cuenta (${email}) ha sido restablecida y actualizada. \n`;
 
-        await sendEmail(email, subject, text);
+        sendEmail(email, subject, text);
 
     } catch (error) {
         console.log(error);

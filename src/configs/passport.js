@@ -12,7 +12,7 @@ const verifyCallback = (username, password, callback) => {
             if (error) { 
                 return callback(error); 
             }
-            if (!admin[0]) { 
+            if (admin[0] === undefined) { 
                 return callback(null, false, {message: "Incorrect username or password."}); 
             }
 
