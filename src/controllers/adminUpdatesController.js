@@ -3,10 +3,10 @@ const db = require('../configs/db').pool;
 const addAdminUpdate = async(req, res) => {
     try {
         const { editor_admin_id, updated_admin_id, update_datetime, update_justification } = req.body;
-        const newAdminUpdate = await db.query(
+        db.query(
             "INSERT INTO Admin_Record_Updates (editor_admin_id, updated_admin_id, update_datetime, update_justification) VALUES (?, ?, ?, ?)",
             [editor_admin_id, updated_admin_id, update_datetime, update_justification],
-            (error, results, fields) => {
+            (error, results) => {
                 if (error) throw error;
                 res.status(201).json({
                     status: "success",
@@ -22,9 +22,9 @@ const addAdminUpdate = async(req, res) => {
 
 const getAllAdminUpdates = async(req, res) => {
     try {
-        const adminUpdates = await db.query(
+        db.query(
             "SELECT * FROM Admin_Record_Updates",
-            (error, results, fields) => {
+            (error, results) => {
                 if (error) throw error;
                 res.status(200).json({
                     status: "success",
@@ -42,15 +42,15 @@ const getAllAdminUpdates = async(req, res) => {
 
 const getAdminUpdateById = async(req, res) => {
     try {
-        const adminUpdate = await db.query(
+        db.query(
             "SELECT * FROM Admin_Record_Updates WHERE update_admin_id = ?",
             [req.params.auid],
-            (error, results, fields) => {
+            (error, results) => {
                 if (error) throw error;
                 res.status(200).json({
                     status: "success",
                     data: {
-                        admin_update: results
+                        admin_update: results[0]
                     }
                 });
             }

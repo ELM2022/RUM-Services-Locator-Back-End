@@ -18,7 +18,7 @@ const testRoutes = require('./src/routes/testRoutes');
 
 // GENERAL SETUP
 require('dotenv').config();
-const port = process.env.APP_PORT;
+const port = process.env.PORT || 3000;
 
 // CREATING CONNECTION POOL
 const pool = connection.pool;

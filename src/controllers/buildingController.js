@@ -27,6 +27,20 @@ const addBuilding = async(req, res) => {
     }
 }
 
+const buildingExists = async(building_name) => {
+    try {
+        await db.promise().query("SELECT * FROM Building WHERE building_name = ?", [building_name])
+            .then((results) => {
+                console.log(results[0] === undefined);
+                return results[0] === undefined;
+            })
+            .catch((error) => res.status(500).json({ message: error.message }));
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const getAllBuildings = async(req, res) => {
     try {
         db.query(
@@ -92,6 +106,7 @@ module.exports = {
     getBuildingById,
     getAllBuildings,
     addBuilding,
-    updateBuilding
+    updateBuilding,
+    buildingExists
 }
 
