@@ -15,12 +15,8 @@ const pendingAdminRoutes = require('./src/routes/pendingAdminRoutes');
 const officeUpdatesRoutes = require('./src/routes/officeUpdatesRoutes');
 const adminUpdatesRoutes = require('./src/routes/adminUpdatesRoutes');
 const authRoutes = require('./src/routes/authRoutes');
-// const testRoutes = require('./src/routes/testRoutes');
 
 // GENERAL SETUP
-// if (process.env.NODE_ENV === "development") {
-//     require('dotenv').config();
-// }
 const port = process.env.PORT || 3000;
 const header = (process.env.NODE_ENV === "production") ? '/' : '/RUMSL';
 
@@ -32,7 +28,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors({
-    origin: "http://localhost:3000",
     credentials: true
 }));
 
@@ -52,11 +47,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use((req, res, next) => {
-//     console.log(req);
-//     next();
-// });
-
 // ADDING ROUTES
 app.use(header, buildingRoutes);
 app.use(header, adminRoutes);
@@ -65,7 +55,6 @@ app.use(header, pendingAdminRoutes);
 app.use(header, officeUpdatesRoutes);
 app.use(header, adminUpdatesRoutes);
 app.use(header, authRoutes);
-// app.use('/RUMSL', testRoutes);
 
 app.use(header, (req, res) => {
     res.send("Welcome to the RUM Services Locator app!");
