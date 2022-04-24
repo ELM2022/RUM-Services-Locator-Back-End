@@ -4,12 +4,12 @@ const { emailVerification, emailPasswReset, emailResetConfirmation } = require('
 
 const login = async (req, res) => {
     try {
-        req.session.token = generateAuthToken();
-        // await emailVerification(req).then(() => {
-        //     // FOR TESTING PURPOSES
-        //     res.redirect('http://localhost:3000/RUMSL/login-validate');
-        // });
-        await emailVerification(req);
+        const authentication = generateAuthToken();
+        req.session.auth_token = authentication.token;
+        req.session.auth_token_expires = authentication.expiration;
+        await emailVerification(req).then(() => {
+            res.status(200).json("Administrator successfully logged in.");
+        });
 
     } catch (error) {
         console.log(error);
@@ -18,14 +18,20 @@ const login = async (req, res) => {
 
 const validateLogin = async(req, res) => {
     try {
-        const sessToken = req.session.token;
+        const sessToken = req.session.auth_token;
+        const sessTokenExpiration = new Date(req.session.auth_token_expires);
         const formToken = req.body.token;
 
-        if (sessToken === formToken) {
-            res.status(200).json("Login validated.");
-            
-        } else {
-            res.status(404).json("Login failed: incorrect token.");
+        if (sessTokenExpiration > new Date(Date.now())) {
+            if (sessToken === formToken) {
+                res.status(200).json("Login validated.");
+                
+            } else {
+                res.status(400).json("Login failed: incorrect token.");
+            }
+        }
+        else {
+            res.status(400).json("Login failed: expired authentication token.");
         }
 
     } catch (error) {
@@ -46,7 +52,9 @@ const recoverPassword = async(req, res) => {
     
                 await db.promise().query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id])
                 .then(() => {
-                    emailPasswReset(admin.admin_email, admin.reset_passw_token);
+                    emailPasswReset(admin.admin_email, admin.reset_passw_token).then(() => {
+                        res.status(200).json("Password recovery requested.");
+                    });
                 })
                 .catch(error => res.status(500).json({ message: error.message }));
 
@@ -77,7 +85,7 @@ const validatePasswReset = async(req, res) => {
                 // res.send(form);
 
             } else {
-                res.status(401).json("Password reset token is invalid or has expired.");
+                res.status(400).json("Password reset token is invalid or has expired.");
             }
         })
         .catch(error => res.status(500).json({ message: error.message }));
@@ -99,12 +107,14 @@ const resetPassword = async(req, res) => {
 
                 await db.promise().query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id])
                 .then(() => {
-                    emailResetConfirmation(admin.admin_email);
+                    emailResetConfirmation(admin.admin_email).then(() => {
+                        res.status(200).json("Password reset successful.");
+                    });
                 })
                 .catch(error => res.status(500).json({ message: error.message }));
 
             } else {
-                res.status(401).json("Password reset token is invalid or has expired.");
+                res.status(400).json("Password reset token is invalid or has expired.");
             }
         })
         .catch(error => res.status(500).json({ message: error.message }));

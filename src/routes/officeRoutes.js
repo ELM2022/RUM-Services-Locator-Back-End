@@ -6,9 +6,10 @@ const { validateRoute } = require('../middlewares/validateMiddleware');
 const { officePostRules, officeUpdateRules } = require('../middlewares/validationRules/officeValidation');
 
 router.get("/offices", officeController.getAllOffices);
+router.get("/offices/active", officeController.getActiveOffices);
 router.get("/offices/:oid", officeController.getOfficeById);
 router.post("/offices", officePostRules(), validateRoute, officeController.addOffice);
 router.put("/offices/:oid", officeUpdateRules(), validateRoute, officeController.updateOffice);
-router.put("/offices/delete/:oid", officeController.deleteOffice);
+router.put("/offices/:oid/delete", officeController.deleteOffice);
 
 module.exports = router;

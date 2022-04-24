@@ -10,7 +10,13 @@ const isValidPassword = (password, hashPassw) => {
 }
 
 const generateAuthToken = () => {
-    return crypto.randomBytes(3).toString("hex").toUpperCase();
+    const auth_token = crypto.randomBytes(3).toString("hex").toUpperCase();
+    const auth_token_expires = new Date(Date.now() + 1800000); // 30 minutes
+
+    return {
+        token: auth_token,
+        expiration: auth_token_expires
+    };
 }
 
 const generatePasswReset = () => {

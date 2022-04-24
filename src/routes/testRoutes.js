@@ -13,6 +13,7 @@ router.get('/login', (req, res, next) => {
                     Enter Email:<br><input type="text" name="username">\
                     <br>Enter Password:<br><input type="password" name="password">\
                     <br><br><input type="submit" value="Submit"></form>';
+                    
 
     res.send(form);
 
@@ -31,7 +32,7 @@ router.get('/register', (req, res, next) => {
     
 });
 
-router.get('/protected-route', isAuthorized, (req, res, next) => {
+router.get('/logged-user', isAuthorized, (req, res, next) => {
     res.send(req.user);
 });
 

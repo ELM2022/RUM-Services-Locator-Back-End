@@ -1,9 +1,6 @@
 const db = require('../configs/db').pool;
-// const path = require('path');
 const nodemailer = require('nodemailer');
 const SMTPTransport = require("nodemailer/lib/smtp-transport");
-
-// require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 const sendEmail = (email, subject, text) => {
     try {
@@ -41,7 +38,7 @@ const emailVerification = async(req) => {
     try {
         const account = await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id]);
         const { admin_email, admin_name } = account[0][0]; 
-        const token = req.session.token;
+        const token = req.session.auth_token;
         
         if (admin_email !== undefined && admin_name !== undefined) {
 
@@ -89,7 +86,7 @@ const emailResetConfirmation = async(email) => {
         const subject = "RUM Services Locator: Cambio de Contraseña";
         const text = `La contraseña para su cuenta (${email}) ha sido restablecida y actualizada. \n`;
 
-        await sendEmail(email, subject, text);
+        sendEmail(email, subject, text);
 
     } catch (error) {
         console.log(error);

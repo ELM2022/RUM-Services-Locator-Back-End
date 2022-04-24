@@ -32,28 +32,14 @@ const addAdmin = async(req, res) => {
 
 const adminExists = async(admin_id = undefined, admin_email = undefined) => {
     try {
-        if (admin_id === undefined) {
-            db.query(
-                "SELECT * FROM Administrator WHERE admin_email = ?",
-                [admin_email],
-                (error, results) => {
-                    if (error) throw error;
-                    console.log(results[0] !== undefined);
-                    return results[0] !== undefined;
-                }
-            );
-        }
-        else {
-            db.query(
-                "SELECT * FROM Administrator WHERE admin_id = ?",
-                [admin_id],
-                (error, results) => {
-                    if (error) throw error;
-                    console.log(results[0] !== undefined);
-                    return results[0] !== undefined;
-                }
-            );
-        }
+        const sql = (admin_id === undefined) ? `SELECT * FROM Administrator WHERE admin_email = ${admin_email}` : `SELECT * FROM Administrator WHERE admin_id = ${admin_id}`;
+
+        await db.promise().query(sql)
+            .then((results) => {
+                console.log(results[0] === undefined);
+                return results[0] === undefined;
+            })
+            .catch((error) => res.status(500).json({ message: error.message }));
 
     } catch (error) {
         console.log(error);
@@ -90,7 +76,27 @@ const getAdminById = async(req, res) => {
                 res.status(200).json({
                     status: "success",
                     data: {
-                        admin: results
+                        admin: results[0]
+                    }
+                });
+            }
+        );
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const getActiveAdmins = async(req, res) => {
+    try {
+        db.query(
+            "SELECT * FROM Administrator WHERE admin_active_status = true",
+            (error, results) => {
+                if (error) throw error;
+                res.status(200).json({
+                    status: "success",
+                    data: {
+                        admins: results
                     }
                 });
             }
@@ -105,7 +111,7 @@ const updateAdmin = async(req, res) => {
     try {
         const { admin_email, admin_name, admin_last_name } = req.body;
         db.query(
-            "UPDATE Administrator SET admin_email = ?, admin_name = ?, admin_last_name = ?, WHERE admin_id = ?",
+            "UPDATE Administrator SET admin_email = ?, admin_name = ?, admin_last_name = ? WHERE admin_id = ?",
             [admin_email, admin_name, admin_last_name, req.params.aid],
             (error, results) => {
                 if (error) throw error;
@@ -122,29 +128,11 @@ const updateAdmin = async(req, res) => {
     }
 }
 
-const updateAdminPassword = async(req, res) => {
-    try {
-        const { admin_password } = req.body;
-        db.query(
-            "UPDATE Administrator SET admin_password = ?, reset_passw_token = ?, reset_passw_expires = ? WHERE admin_id = ?",
-            [admin_password, undefined, undefined, req.params.aid],
-            (error, result) => {
-                if (error) throw error;
-                res.status(200).json({
-                    status: "success",
-                    result: result
-                });
-            }
-        );
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 const deleteAdmin = async(req, res) => {
     try {
         db.query(
-            "UPDATE Administrator SET admin_active_status = 0",
+            "UPDATE Administrator SET admin_active_status = 0 WHERE admin_id = ?",
+            [req.params.aid],
             (error) => {
                 if (error) throw error;
                 res.status(200).json({
@@ -162,8 +150,8 @@ module.exports = {
     addAdmin,
     getAdminById,
     getAllAdmins,
+    getActiveAdmins,
     updateAdmin,
-    updateAdminPassword,
     deleteAdmin,
     adminExists
 }
