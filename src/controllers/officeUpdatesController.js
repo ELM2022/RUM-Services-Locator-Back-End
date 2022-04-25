@@ -23,7 +23,9 @@ const addOfficeUpdate = async(req, res) => {
 const getAllOfficeUpdates = async(req, res) => {
     try {
         db.query(
-            "SELECT * FROM Office_Record_Updates",
+            `SELECT * FROM Office_Record_Updates
+            INNER JOIN Office ON Office_Record_Updates.office_id = Office.office_id
+            INNER JOIN Administrator ON Office_Record_Updates.admin_id = Administrator.admin_id`,
             (error, results) => {
                 if (error) throw error;
                 res.status(200).json({
