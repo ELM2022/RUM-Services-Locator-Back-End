@@ -7,11 +7,11 @@ const pendingAdminPostRules = () => {
         body('pending_email').notEmpty().isEmail().withMessage("Pending admin email must be a valid email."),
         body('admin_id').custom(value => {
             return db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [value]).then(result => {
-                if (result[0] === undefined) {
+                if (result[0][0] === undefined) {
                     return Promise.reject("Admin id does not exist.");
-                } 
+                }
             });
-        })
+        }).withMessage("Source administrator does not exist.")
     ]
 }
 

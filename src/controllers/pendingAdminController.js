@@ -1,69 +1,46 @@
 const db = require('../configs/db').pool;
-const { adminExists } = require('../controllers/adminController');
+// const { adminExists } = require('../controllers/adminController');
 
 const addPendingAdmin = async(req, res) => {
     try {
         const { admin_id, pending_email } = req.body;
-        await pendingAdminExists(pending_email).then((duplicate) => {
-            if (duplicate) {
-                res.status(400).json("Pending administrator already exists.");
-            } else {
-                await adminExists(admin_id).then((exists) => {
-                    if (exists) {
-                        await db.promise().query("INSERT INTO Pending_Admin (admin_id, pending_email, pending_status) VALUES (?, ?, ?)", [admin_id, pending_email, 1])
-                            .then((results) => {
-                                res.status(201).json({
-                                    status: "success",
-                                    result: results
-                                });
-                            })
-                            .catch(error => res.status(500).json({ message: error.message }));
-                    } else {
-                        res.status(404).json("Source administrator is not in the system.");
+
+        db.query(
+            "INSERT INTO Pending_Admin (admin_id, pending_email, pending_status) VALUES (?, ?, ?)", [admin_id, pending_email, 1],
+            (error, results) => {
+                if (error) {
+                    if (error.code === "ER_DUP_ENTRY") {
+                        res.status(404).json("Pending administrator account already exists.");
                     }
-                })
-                .catch(error => res.status(500).json({ message: error.message }));
+                    else throw error;
+                }
+                else {
+                    res.status(201).json({
+                        status: "success",
+                        result: results
+                    });
+                }
             }
-        })
-        .catch(error => res.status(500).json({ message: error.message }));
-        // const duplicate = await pendingAdminExists(pending_email).valueOf();
-        // const admin_exists = await adminExists(admin_id).valueOf();
-
-        // if (duplicate === undefined && admin_exists === undefined) {
-        //     const newPendingAdmin = await db.query(
-        //         "INSERT INTO Pending_Admin (admin_id, pending_email, pending_status) VALUES (?, ?, ?)",
-        //         [admin_id, pending_email, 1],
-        //         (error, results, fields) => {
-        //             if (error) throw error;
-        //             res.status(201).json({
-        //                 status: "success",
-        //                 result: results
-        //             });
-        //         }
-        //     );
-        // }
-        // else {
-        //     res.status(404).json("Pending admin already exists.");
-        // }
+        );
 
     } catch (error) {
         console.log(error);
     }
 }
 
-const pendingAdminExists = async(pending_email) => {
-    try {
-        await db.promise().query("SELECT * FROM Pending_Admin WHERE pending_email = ?", [pending_email])
-            .then((results) => {
-                console.log(results[0] === undefined);
-                return results[0] === undefined;
-            })
-            .catch((error) => res.status(500).json({ message: error.message }));
+// const pendingAdminExists = async(pending_email) => {
+//     try {
+//         await db.promise().query("SELECT * FROM Pending_Admin WHERE pending_email = ?", [pending_email])
+//             .then((results) => {
+//                 console.log(results[0] !== undefined);
+//                 return results[0] === undefined;
+//             })
+//             .catch((error) => res.status(500).json({ message: error.message }));
 
-    } catch (error) {
-        console.log(error);
-    }
-}
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 
 const getAllPendingAdmins = async(req, res) => {
     try {
