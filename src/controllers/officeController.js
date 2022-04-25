@@ -30,19 +30,19 @@ const addOffice = async(req, res) => {
     }
 }
 
-const officeExists = async(office_name) => {
-    try {
-        await db.promise().query("SELECT * FROM Office WHERE office_name = ?", [office_name])
-            .then((results) => {
-                console.log(results[0] === undefined);
-                return results[0] === undefined;
-            })
-            .catch((error) => res.status(500).json({ message: error.message }));
+// const officeExists = async(office_name) => {
+//     try {
+//         await db.promise().query("SELECT * FROM Office WHERE office_name = ?", [office_name])
+//             .then((results) => {
+//                 console.log(results[0] === undefined);
+//                 return results[0] === undefined;
+//             })
+//             .catch((error) => res.status(500).json({ message: error.message }));
 
-    } catch (error) {
-        console.log(error);
-    }
-}
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 
 const getAllOffices = async(req, res) => {
     try {
@@ -153,6 +153,6 @@ module.exports = {
     getActiveOffices,
     updateOffice,
     deleteOffice,
-    officeExists
+    // officeExists
 }
 
