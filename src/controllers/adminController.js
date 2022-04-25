@@ -30,21 +30,22 @@ const addAdmin = async(req, res) => {
     }
 }
 
-const adminExists = async(admin_id = undefined, admin_email = undefined) => {
-    try {
-        const sql = (admin_id === undefined) ? `SELECT * FROM Administrator WHERE admin_email = ${admin_email}` : `SELECT * FROM Administrator WHERE admin_id = ${admin_id}`;
+// const adminExists = (admin_id = undefined, admin_email = undefined) => {
+//     try {
+//         const sql = (admin_id === undefined) ? `SELECT * FROM Administrator WHERE admin_email = ${admin_email}` : `SELECT * FROM Administrator WHERE admin_id = ${admin_id}`;
 
-        await db.promise().query(sql)
-            .then((results) => {
-                console.log(results[0] === undefined);
-                return results[0] === undefined;
-            })
-            .catch((error) => res.status(500).json({ message: error.message }));
+//         db.query(sql, (error, results) => {
+//             if (error) {
+//                 throw error;
+//             } else {
+//                 return results[0] !== undefined;
+//             }
+//         });
 
-    } catch (error) {
-        console.log(error);
-    }
-}
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 
 const getAllAdmins = async(req, res) => {
     try {
@@ -153,5 +154,5 @@ module.exports = {
     getActiveAdmins,
     updateAdmin,
     deleteAdmin,
-    adminExists
+    // adminExists
 }
