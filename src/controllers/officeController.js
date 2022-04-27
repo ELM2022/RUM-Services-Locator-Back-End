@@ -3,7 +3,7 @@ const db = require('../configs/db').pool;
 const addOffice = async(req, res) => {
     try {
         const { building_id, office_name, office_description, office_schedule, office_latitude, office_longitude, office_floor_number, 
-                office_room_code, office_email, office_phone_number, office_extension_number, office_website } = req.body;
+                office_room_code, office_email, office_phone_number, office_extension_number, office_website } = req.body.office;
 
         db.query(
             "INSERT INTO Office (building_id, office_name, office_description, office_schedule, office_latitude, office_longitude, office_floor_number, office_room_code, office_email, office_phone_number, office_extension_number, office_website, office_active_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -108,7 +108,7 @@ const getOfficeById = async(req, res) => {
 const updateOffice = async(req, res) => {
     try {
         const { building_id, office_name, office_description, office_schedule, office_latitude, office_longitude, office_floor_number, 
-            office_room_code, office_email, office_phone_number, office_extension_number, office_website, office_active_status } = req.body;
+            office_room_code, office_email, office_phone_number, office_extension_number, office_website, office_active_status } = req.body.office;
         
         db.query(
             "UPDATE Office SET building_id = ?, office_name = ?, office_description = ?, office_schedule = ?, office_latitude = ?, office_longitude = ?, office_floor_number = ?, office_room_code = ?, office_email = ?, office_phone_number = ?, office_extension_number = ?, office_website = ?, office_active_status = ? WHERE office_id = ?",
