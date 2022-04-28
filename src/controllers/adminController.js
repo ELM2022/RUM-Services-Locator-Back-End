@@ -3,12 +3,12 @@ const genPassword = require('../utils/passwordUtils').getHashPassword;
 
 const addAdmin = async(req, res) => {
     try {
-        const { admin_email, admin_name, admin_last_name } = req.body;
-        const admin_password = genPassword(req.body.admin_password);
+        const { admin_email, admin_password, admin_name, admin_last_name } = req.body.administrator;
+        const hash_password = genPassword(admin_password);
 
         db.query(
             "INSERT INTO Administrator (admin_email, admin_password, admin_name, admin_last_name, admin_active_status) VALUES (?, ?, ?, ?, ?)",
-            [admin_email, admin_password, admin_name, admin_last_name, 1],
+            [admin_email, hash_password, admin_name, admin_last_name, 1],
             (error, results) => {
                 if (error) {
                     if (error.code === "ER_DUP_ENTRY") {
@@ -110,7 +110,7 @@ const getActiveAdmins = async(req, res) => {
 
 const updateAdmin = async(req, res) => {
     try {
-        const { admin_email, admin_name, admin_last_name } = req.body;
+        const { admin_email, admin_name, admin_last_name } = req.body.administrator;
         db.query(
             "UPDATE Administrator SET admin_email = ?, admin_name = ?, admin_last_name = ? WHERE admin_id = ?",
             [admin_email, admin_name, admin_last_name, req.params.aid],
