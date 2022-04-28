@@ -3,7 +3,7 @@ const db = require('../configs/db').pool;
 
 const addPendingAdmin = async(req, res) => {
     try {
-        const { admin_id, pending_email } = req.body;
+        const { admin_id, pending_email } = req.body.pending_admin;
 
         db.query(
             "INSERT INTO Pending_Admin (admin_id, pending_email, pending_status) VALUES (?, ?, ?)", [admin_id, pending_email, 1],
