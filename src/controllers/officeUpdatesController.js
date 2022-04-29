@@ -2,7 +2,7 @@ const db = require('../configs/db').pool;
 
 const addOfficeUpdate = async(req, res) => {
     try {
-        const { office_id, admin_id, update_datetime, update_justification } = req.body;
+        const { office_id, admin_id, update_datetime, update_justification } = req.body.office_update;
         db.query(
             "INSERT INTO Office_Record_Updates (office_id, admin_id, update_datetime, update_justification) VALUES (?, ?, ?, ?)",
             [office_id, admin_id, update_datetime, update_justification],

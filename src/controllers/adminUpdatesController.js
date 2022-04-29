@@ -2,7 +2,7 @@ const db = require('../configs/db').pool;
 
 const addAdminUpdate = async(req, res) => {
     try {
-        const { editor_admin_id, updated_admin_id, update_datetime, update_justification } = req.body;
+        const { editor_admin_id, updated_admin_id, update_datetime, update_justification } = req.body.admin_update;
         db.query(
             "INSERT INTO Admin_Record_Updates (editor_admin_id, updated_admin_id, update_datetime, update_justification) VALUES (?, ?, ?, ?)",
             [editor_admin_id, updated_admin_id, update_datetime, update_justification],
