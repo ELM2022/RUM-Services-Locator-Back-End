@@ -21,6 +21,9 @@ const validateLogin = async(req, res) => {
         const sessToken = req.session.auth_token;
         const sessTokenExpiration = new Date(req.session.auth_token_expires);
         const formToken = req.body.token;
+        console.log(sessTokenExpiration);
+        console.log(req.session.auth_token_expires);
+        console.log("Not expired: ", sessTokenExpiration > new Date(Date.now()));
 
         if (sessTokenExpiration > new Date(Date.now())) {
             if (sessToken === formToken) {
