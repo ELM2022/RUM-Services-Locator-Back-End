@@ -18,7 +18,8 @@ router.get('/reset/:token', accountController.validatePasswReset);
 
 router.get('/logout', (req, res) => {
     req.logout();
-    res.status(200).json("Administrator logged out.");
+    // res.status(200).json("Administrator logged out.");
+    res.redirect('http://localhost:3000/Login_Screen');
 });
 
 module.exports = router;

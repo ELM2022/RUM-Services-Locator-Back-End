@@ -2,7 +2,7 @@ const { body } = require('express-validator');
 
 const loginTokenRules = () => {
     return [
-        body('token').notEmpty().isLength(6).isAlphanumeric().withMessage("Login token must be alphanumeric and have a length of 6 characters.")
+        // body('token').notEmpty().isLength(6).isAlphanumeric().withMessage("Login token must be alphanumeric and have a length of 6 characters.")
     ]
 }
 
