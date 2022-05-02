@@ -42,9 +42,9 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24     // one day
-    }
+    // cookie: {
+    //     maxAge: 1000 * 60 * 60 * 24     // one day
+    // }
 }));
 
 // SETTING UP AUTHENTICATION
