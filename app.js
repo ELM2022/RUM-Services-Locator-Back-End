@@ -19,6 +19,7 @@ const authRoutes = require('./src/routes/authRoutes');
 // GENERAL SETUP
 const port = process.env.PORT || 3000;
 const header = (process.env.NODE_ENV === "production") ? '/' : '/RUMSL';
+const config = (process.env.NODE_ENV === "production") ? connection.prodConfig : connection.devConfig;
 
 // CREATING CONNECTION POOL
 const pool = connection.pool;
@@ -32,7 +33,7 @@ app.use(cors({
 }));
 
 // SESSION SETUP
-const sessionStore = new MySQLStore(connection.devConfig);
+const sessionStore = new MySQLStore(config);
 app.use(session({
     secret: process.env.SESS_SECRET,
     resave: false,
