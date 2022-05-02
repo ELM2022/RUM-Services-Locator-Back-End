@@ -18,7 +18,7 @@ router.get('/reset/:token', accountController.validatePasswReset);
 
 router.get('/logout', (req, res) => {
     req.logout();
-    res.json("Administrator logged out.");
+    res.status(200).json("Administrator logged out.");
 });
 
 module.exports = router;

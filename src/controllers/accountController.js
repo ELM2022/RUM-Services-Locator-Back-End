@@ -8,7 +8,7 @@ const login = async (req, res) => {
         req.session.auth_token = authentication.token;
         req.session.auth_token_expires = authentication.expiration;
         await emailVerification(req).then(() => {
-            res.status(200).json("Administrator successfully logged in.");
+            res.status(200).json("Successful administrator login request.");
         });
 
     } catch (error) {
@@ -24,7 +24,12 @@ const validateLogin = async(req, res) => {
 
         if (sessTokenExpiration > new Date(Date.now())) {
             if (sessToken === formToken) {
-                res.status(200).json("Login validated.");
+                // res.status(200).json("Login validated.");
+                res.status(200).json({
+                    token: sessToken,
+                    admin_id: req.user.admin_id,
+                    admin_email: req.user.admin_email
+                });
                 
             } else {
                 res.status(400).json("Login failed: incorrect token.");
@@ -74,7 +79,8 @@ const validatePasswReset = async(req, res) => {
         await db.promise().query("SELECT * FROM Administrator WHERE reset_passw_token = ? AND reset_passw_expires >= ?", [req.params.token, new Date(Date.now())])
         .then(result => {
             if (result[0] !== undefined) {
-                res.status(200).json("Password reset validated.");
+                // res.status(200).json("Password reset validated.");
+                res.redirect(`http://localhost:3000/Password_Reset/${req.params.token}`);
 
                 // FOR TESTING PURPOSES
                 // const form = `<h1>Reset Password Page</h1><form method="POST" action="http://localhost:3000/RUMSL/reset/${req.params.token}">\
