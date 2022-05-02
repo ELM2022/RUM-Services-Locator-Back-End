@@ -21,9 +21,11 @@ router.post('/recover', recoverPasswRules(), validateRoute, accountController.re
 router.post('/reset/:token', resetPasswRules(), validateRoute, accountController.resetPassword);
 router.get('/reset/:token', accountController.validatePasswReset);
 
-router.get('/logout', (req, res) => {
-    req.logout();
-    res.json("Administrator logged out.");
-});
+// router.get('/logout', (req, res) => {
+//     req.logout();
+//     res.json("Administrator logged out.");
+// });
+
+router.get('/logout', accountController.logout);
 
 module.exports = router;

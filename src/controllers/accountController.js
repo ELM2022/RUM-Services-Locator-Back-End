@@ -4,13 +4,25 @@ const { emailVerification, emailPasswReset, emailResetConfirmation } = require('
 
 const login = async (req, res) => {
     try {
+
+        const admin = req.user;
         const authentication = generateAuthToken();
-        req.session.auth_token = authentication.token;
-        req.session.auth_token_expires = authentication.expiration;
-        await emailVerification(req).then(() => {
-            // FOR TESTING PURPOSES
-            res.redirect('http://localhost:3000/RUMSL/login-validate');
-        });
+        admin.auth_token = authentication.token;
+        admin.auth_token_expires = authentication.expiration;
+
+        await db.promise().query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id])
+                .then(() => {
+                    emailVerification(req).then(() => {
+                        // FOR TESTING PURPOSES
+                        res.redirect('http://localhost:3000/RUMSL/login-validate');
+                    });
+                })
+                .catch(error => res.status(500).json({ message: error.message }));
+
+        // await emailVerification(req).then(() => {
+        //     // FOR TESTING PURPOSES
+        //     res.redirect('http://localhost:3000/RUMSL/login-validate');
+        // });
 
     } catch (error) {
         console.log(error);
@@ -19,21 +31,33 @@ const login = async (req, res) => {
 
 const validateLogin = async(req, res) => {
     try {
-        const sessToken = req.session.auth_token;
-        const sessTokenExpiration = new Date(req.session.auth_token_expires);
-        const formToken = req.body.token;
 
-        if (sessTokenExpiration > new Date(Date.now())) {
-            if (sessToken === formToken) {
-                res.status(200).json("Login validated.");
+        await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id])
+        .then(result => {
+            const admin = result[0][0];
+            if (admin !== undefined) {
                 
+                const sessToken = admin.auth_token;
+                const sessTokenExpiration = new Date(admin.auth_token_expires);
+                const formToken = req.body.token;
+
+                if (sessTokenExpiration > new Date(Date.now())) {
+                    if (sessToken === formToken) {
+                        res.status(200).json("Login validated.");
+                        
+                    } else {
+                        res.status(400).json("Login failed: incorrect token.");
+                    }
+                }
+                else {
+                    res.status(400).json("Login failed: expired authentication token.");
+                }
+
             } else {
-                res.status(400).json("Login failed: incorrect token.");
+                res.status(404).json("Administrator account not found.");
             }
-        }
-        else {
-            res.status(400).json("Login failed: expired authentication token.");
-        }
+        })
+        .catch(error => res.status(500).json({ message: error.message }));
 
     } catch (error) {
         console.log(error);
@@ -125,10 +149,22 @@ const resetPassword = async(req, res) => {
     }
 }
 
+const logout = async (req, res) => {
+
+    await db.promise().query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [null, null, req.user.admin_id])
+    .then(() => {
+        req.logout();
+        res.redirect('http://localhost:3000/RUMSL/login');
+    })
+    .catch(error => res.status(500).json({ message: error.message }));
+
+}
+
 module.exports = {
     login,
     validateLogin,
     recoverPassword,
     validatePasswReset,
-    resetPassword
+    resetPassword,
+    logout
 }
