@@ -30,6 +30,7 @@ const validateLogin = async(req, res) => {
         // if (sessTokenExpiration > new Date(Date.now())) {
             if (sessToken === formToken) {
                 // res.status(200).json("Login validated.");
+                console.log(req.user);
                 res.status(200).json({
                     token: sessToken,
                     admin_id: req.user.admin_id,
