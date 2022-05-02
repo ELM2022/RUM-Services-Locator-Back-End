@@ -4,10 +4,8 @@ const { emailVerification, emailPasswReset, emailResetConfirmation } = require('
 
 const login = async (req, res) => {
     try {
-        console.log(req.user);
         const authentication = generateAuthToken();
         // console.log(authentication.expiration);
-        req.session.user = req.user;
         req.session.auth_token = authentication.token;
         req.session.auth_token_expires = authentication.expiration;
         // console.log(req.session.auth_token_expires);
@@ -32,11 +30,11 @@ const validateLogin = async(req, res) => {
         // if (sessTokenExpiration > new Date(Date.now())) {
             if (sessToken === formToken) {
                 // res.status(200).json("Login validated.");
-                console.log(req.session.user);
+                console.log(req.user);
                 res.status(200).json({
                     token: sessToken,
-                    admin_id: req.session.user.admin_id,
-                    admin_email: req.session.user.admin_email
+                    admin_id: req.user.admin_id,
+                    admin_email: req.user.admin_email
                 });
                 
             } else {
