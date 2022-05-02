@@ -27,7 +27,7 @@ const validateLogin = async(req, res) => {
         console.log(req.session.auth_token_expires);
         console.log("Not expired: ", sessTokenExpiration > new Date(Date.now()));
 
-        // if (sessTokenExpiration > new Date(Date.now())) {
+        if (sessTokenExpiration > new Date(Date.now())) {
             if (sessToken === formToken) {
                 // res.status(200).json("Login validated.");
                 console.log(req.user);
@@ -40,10 +40,10 @@ const validateLogin = async(req, res) => {
             } else {
                 res.status(400).json("Login failed: incorrect token.");
             }
-        // }
-        // else {
-        //     res.status(400).json("Login failed: expired authentication token.");
-        // }
+        }
+        else {
+            res.status(400).json("Login failed: expired authentication token.");
+        }
 
     } catch (error) {
         console.log(error);
