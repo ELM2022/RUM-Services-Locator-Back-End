@@ -5,8 +5,10 @@ const { emailVerification, emailPasswReset, emailResetConfirmation } = require('
 const login = async (req, res) => {
     try {
         const authentication = generateAuthToken();
+        console.log(authentication.expiration);
         req.session.auth_token = authentication.token;
         req.session.auth_token_expires = authentication.expiration;
+        console.log(req.session.auth_token_expires);
         await emailVerification(req).then(() => {
             res.status(200).json("Successful administrator login request.");
         });
