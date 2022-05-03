@@ -7,9 +7,9 @@ const MySQLStore = require('express-mysql-session')(session);
 require('./src/configs/passport');
 
 // IMPORTING ROUTES
-const buildingRoutes = require('./src/routes/buildingRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 const officeRoutes = require('./src/routes/officeRoutes');
+const categoryRoutes = require('./src/routes/categoryRoutes');
 const pendingAdminRoutes = require('./src/routes/pendingAdminRoutes');
 const officeUpdatesRoutes = require('./src/routes/officeUpdatesRoutes');
 const adminUpdatesRoutes = require('./src/routes/adminUpdatesRoutes');
@@ -46,15 +46,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use((req, res, next) => {
-//     console.log(req);
-//     next();
-// });
-
 // ADDING ROUTES
-app.use('/RUMSL', buildingRoutes);
 app.use('/RUMSL', adminRoutes);
 app.use('/RUMSL', officeRoutes);
+app.use('/RUMSL', categoryRoutes);
 app.use('/RUMSL', pendingAdminRoutes);
 app.use('/RUMSL', officeUpdatesRoutes);
 app.use('/RUMSL', adminUpdatesRoutes);
