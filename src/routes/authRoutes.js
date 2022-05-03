@@ -16,10 +16,11 @@ router.post('/recover', recoverPasswRules(), validateRoute, accountController.re
 router.post('/reset/:token', resetPasswRules(), validateRoute, accountController.resetPassword);
 router.get('/reset/:token', accountController.validatePasswReset);
 
-router.get('/logout', (req, res) => {
-    req.logout();
-    // res.status(200).json("Administrator logged out.");
-    res.redirect('http://localhost:3000/Login_Screen');
-});
+// router.get('/logout', (req, res) => {
+//     req.logout();
+//     res.json("Administrator logged out.");
+// });
+
+router.get('/logout', accountController.logout);
 
 module.exports = router;

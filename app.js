@@ -8,9 +8,9 @@ const MySQLStore = require('express-mysql-session')(session);
 require('./src/configs/passport');
 
 // IMPORTING ROUTES
-const buildingRoutes = require('./src/routes/buildingRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 const officeRoutes = require('./src/routes/officeRoutes');
+const categoryRoutes = require('./src/routes/categoryRoutes');
 const pendingAdminRoutes = require('./src/routes/pendingAdminRoutes');
 const officeUpdatesRoutes = require('./src/routes/officeUpdatesRoutes');
 const adminUpdatesRoutes = require('./src/routes/adminUpdatesRoutes');
@@ -32,7 +32,7 @@ app.use(cors({
     origin: "http://localhost:3000",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
-    exposedHeaders: ["set-cookie"],
+    // exposedHeaders: ["set-cookie"],
 }));
 
 // SESSION SETUP
@@ -54,9 +54,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ADDING ROUTES
-app.use(header, buildingRoutes);
 app.use(header, adminRoutes);
 app.use(header, officeRoutes);
+app.use(header, categoryRoutes);
 app.use(header, pendingAdminRoutes);
 app.use(header, officeUpdatesRoutes);
 app.use(header, adminUpdatesRoutes);

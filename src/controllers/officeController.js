@@ -105,6 +105,48 @@ const getOfficeById = async(req, res) => {
     }
 }
 
+const getOfficesWithCategory = async (req, res) => {
+    try {
+        const sql = `SELECT * FROM Office_Category
+                    INNER JOIN Category ON Category.category_id = Office_Category.category_id
+                    INNER JOIN Office ON Office.office_id = Office_Category.office_id
+                    WHERE office_active_status = true`;
+
+        db.query(sql, (error, results) => {
+            if (error) throw error;
+            res.status(200).json({
+                status: "success",
+                data: {
+                    offices: results
+                }
+            });
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const getOfficeByCategory = async (req, res) => {
+    try {
+        const sql = `SELECT * FROM Office_Category
+                    INNER JOIN Category ON Category.category_id = Office_Category.category_id
+                    INNER JOIN Office ON Office.office_id = Office_Category.office_id
+                    WHERE category_name = ?`;
+
+        db.query(sql, [req.query.category_name], (error, results) => {
+            if (error) throw error;
+            res.status(200).json({
+                status: "success",
+                data: {
+                    offices: results
+                }
+            });
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const updateOffice = async(req, res) => {
     try {
         const { office_name, office_description, office_schedule, office_latitude, office_longitude, office_floor_number, 
@@ -151,6 +193,8 @@ module.exports = {
     getOfficeById,
     getAllOffices,
     getActiveOffices,
+    getOfficesWithCategory,
+    getOfficeByCategory,
     updateOffice,
     deleteOffice,
     // officeExists
