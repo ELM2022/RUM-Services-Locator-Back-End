@@ -26,8 +26,9 @@ const login = async (req, res) => {
 const validateLogin = async(req, res) => {
     try {
 
-        await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id])
-        .then(result => {
+        db.query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id], 
+        (error, result) => {
+            if (error) throw error;
             const admin = result[0][0];
             if (admin !== undefined) {
                 
@@ -56,8 +57,7 @@ const validateLogin = async(req, res) => {
             } else {
                 res.status(404).json("Administrator account not found.");
             }
-        })
-        .catch(error => res.status(500).json({ message: error.message }));
+        });
 
     } catch (error) {
         console.log(error);
@@ -155,7 +155,7 @@ const logout = async (req, res) => {
     await db.promise().query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [null, null, req.user.admin_id])
     .then(() => {
         req.logout();
-        res.redirect('http://localhost:3000/RUMSL/login');
+        res.redirect('http://localhost:3000/Login_Screen');
     })
     .catch(error => res.status(500).json({ message: error.message }));
 
