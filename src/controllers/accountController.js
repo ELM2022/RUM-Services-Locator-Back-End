@@ -39,7 +39,8 @@ const validateLogin = async(req, res) => {
                 
                 const sessToken = admin.auth_token;
                 const sessTokenExpiration = new Date(admin.auth_token_expires);
-                const formToken = req.body.token;
+                // const formToken = req.body.token;
+                const formToken = req.query.token;
 
                 if (sessTokenExpiration > new Date(Date.now())) {
                     if (sessToken === formToken) {
