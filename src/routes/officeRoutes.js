@@ -19,5 +19,6 @@ router.get("/offices/:oid/category", categoryController.getCategoriesByOfficeId)
 router.delete("/offices/:oid/category", categoryController.deleteOfficeCategoriesById);
 router.delete("/offices/:oid/category/all", categoryController.deleteAllOfficeCategories);
 router.get('/offices/category/match', officeController.getOfficeByCategory);
+router.get('/offices/category/membership', officeController.getAllOfficeCategoryMemberships);
 
 module.exports = router;
