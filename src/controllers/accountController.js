@@ -23,7 +23,7 @@ const login = async (req, res) => {
     }
 }
 
-const validateLogin = async(req, res) => {
+const validateLogin = (req, res) => {
     try {
 
         db.query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id], 
