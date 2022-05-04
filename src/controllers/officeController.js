@@ -188,6 +188,35 @@ const deleteOffice = async(req, res) => {
     }
 }
 
+const getAllOfficeCategoryMemberships = async (req, res) => {
+    try {
+        const category_memberships = [];
+        const sql = `SELECT * FROM Category
+                    INNER JOIN Office_Category ON Office_Category.category_id = Category.category_id
+                    INNER JOIN Office ON Office.office_id = Office_Category.office_id
+                    WHERE Category.category_id = ?`;
+
+        db.query('SELECT * FROM Category', (error, categories) => {
+            if (error) throw error;
+            categories.map((category) => {
+                const {category_id, category_name} = category;
+                db.query(sql, [category_id], (error, offices) => {
+                    if (error) throw error;
+                    category_memberships.push({
+                        category_name: category_name,
+                        offices: offices
+                    });
+                });
+            });
+        });
+
+        setTimeout(() => res.status(200).json(category_memberships), 100);
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     addOffice,
     getOfficeById,
@@ -197,6 +226,7 @@ module.exports = {
     getOfficeByCategory,
     updateOffice,
     deleteOffice,
+    getAllOfficeCategoryMemberships
     // officeExists
 }
 
