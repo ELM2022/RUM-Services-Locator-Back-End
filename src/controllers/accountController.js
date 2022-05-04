@@ -26,9 +26,8 @@ const login = async (req, res) => {
 const validateLogin = (req, res) => {
     try {
 
-        db.query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id], 
-        (error, result) => {
-            if (error) throw error;
+        await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id])
+        .then((result) => {
             const admin = result[0][0];
             if (admin !== undefined) {
                 
@@ -57,7 +56,8 @@ const validateLogin = (req, res) => {
             } else {
                 res.status(404).json("Administrator account not found.");
             }
-        });
+        })
+        .catch(error => console.log(error));
 
     } catch (error) {
         console.log(error);
