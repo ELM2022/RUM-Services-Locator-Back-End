@@ -43,11 +43,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
-    cookie: {
-        httpOnly: false,
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24     // one day
-    }
+    // cookie: {
+    //     httpOnly: false,
+    //     secure: false,
+    //     maxAge: 1000 * 60 * 60 * 24     // one day
+    // }
 }));
 
 // SETTING UP AUTHENTICATION
