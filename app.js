@@ -28,11 +28,12 @@ const pool = connection.pool;
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+// app.use(cors());
 app.use(cors({
     origin: "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    // methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
-    exposedHeaders: ["set-cookie"],
+    // exposedHeaders: ["set-cookie"],
 }));
 
 // SESSION SETUP
