@@ -10,7 +10,7 @@ const login = async (req, res) => {
         admin.auth_token = authentication.token;
         admin.auth_token_expires = authentication.expiration;
         req.session.data = req.user;
-        // console.log(req.session);
+        console.log(req.session);
 
         await db.promise().query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id])
                 .then(() => {
@@ -27,9 +27,9 @@ const login = async (req, res) => {
 
 const validateLogin = async (req, res) => {
     try {
-        // console.log(req.user);
+        console.log(req.user);
         console.log(req.session);
-        // console.log(req.session.data);
+        console.log(req.session.data);
         // console.log(req._passport);
         if (req.session.data !== undefined) {
             const data = req.session.data;
