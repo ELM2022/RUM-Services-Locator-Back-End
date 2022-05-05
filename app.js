@@ -32,7 +32,7 @@ app.use(express.urlencoded({extended: true}));
 // app.use(cors());
 app.use(cors({
     origin: "http://localhost:3000",
-    // methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     // exposedHeaders: ["set-cookie"],
 }));
@@ -44,12 +44,12 @@ app.use(session({
     secret: process.env.SESS_SECRET,
     resave: false,
     saveUninitialized: false,
-    // store: sessionStore,
-    // cookie: {
-    //     httpOnly: false,
-    //     secure: false,
-    //     maxAge: 1000 * 60 * 60 * 24     // one day
-    // }
+    store: sessionStore,
+    cookie: {
+        httpOnly: false,
+        secure: false,
+        maxAge: 1000 * 60 * 60 * 24     // one day
+    }
 }));
 
 // SETTING UP AUTHENTICATION

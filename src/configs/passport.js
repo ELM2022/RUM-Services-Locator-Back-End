@@ -37,6 +37,7 @@ passport.serializeUser((admin, callback) => {
 });
 
 passport.deserializeUser((adminId, callback) => {
+    console.log('Deserialize user: ', adminId);
     db.query(
         "SELECT * FROM Administrator WHERE admin_id = ?",
         [adminId],
