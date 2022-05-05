@@ -9,6 +9,7 @@ const { loginTokenRules, recoverPasswRules, resetPasswRules } = require('../midd
 const { adminPostRules } = require('../middlewares/validationRules/adminValidation');
 
 router.post('/login', passport.authenticate('local', {session: true}), accountController.login);
+// router.post('/login', accountController.login);
 router.post('/register', adminPostRules(), validateRoute, adminController.addAdmin);
 // router.post('/login/validate', loginTokenRules(), validateRoute, accountController.validateLogin);
 router.get('/login/validate', accountController.validateLogin);

@@ -10,7 +10,7 @@ const login = async (req, res) => {
         admin.auth_token = authentication.token;
         admin.auth_token_expires = authentication.expiration;
         req.session.data = req.user;
-        console.log(req.session);
+        // console.log(req.session);
 
         await db.promise().query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id])
                 .then(() => {
@@ -27,43 +27,47 @@ const login = async (req, res) => {
 
 const validateLogin = async (req, res) => {
     try {
-        console.log(req.user);
+        // console.log(req.user);
         console.log(req.session);
-        console.log(req.session.data);
+        // console.log(req.session.data);
         // console.log(req._passport);
-        // await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id])
-        // .then((result) => {
-        //     const admin = result[0][0];
-        //     if (admin !== undefined) {
-                
-        //         const sessToken = admin.auth_token;
-        //         const sessTokenExpiration = new Date(admin.auth_token_expires);
-        //         // const formToken = req.body.token;
-        //         const formToken = req.query.token;
+        if (req.session.data !== undefined) {
+            const data = req.session.data;
+            await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [data.admin_id])
+            .then((result) => {
+            const admin = result[0][0];
+                if (admin !== undefined) {
+                    
+                    const sessToken = admin.auth_token;
+                    const sessTokenExpiration = new Date(admin.auth_token_expires);
+                    // const formToken = req.body.token;
+                    const formToken = req.query.token;
 
-        //         if (sessTokenExpiration > new Date(Date.now())) {
-        //             if (sessToken === formToken) {
-        //                 // res.status(200).json("Login validated.");
-        //                 res.status(200).json({
-        //                     token: sessToken,
-        //                     admin_id: req.user.admin_id,
-        //                     admin_email: req.user.admin_email
-        //                 });
-                        
-        //             } else {
-        //                 res.status(400).json("Login failed: incorrect token.");
-        //             }
-        //         }
-        //         else {
-        //             res.status(400).json("Login failed: expired authentication token.");
-        //         }
+                    if (sessTokenExpiration > new Date(Date.now())) {
+                        if (sessToken === formToken) {
+                            // res.status(200).json("Login validated.");
+                            res.status(200).json({
+                                token: sessToken,
+                                admin_id: data.admin_id,
+                                admin_email: data.admin_email
+                            });
+                            
+                        } else {
+                            res.status(400).json("Login failed: incorrect token.");
+                        }
+                    }
+                    else {
+                        res.status(400).json("Login failed: expired authentication token.");
+                    }
 
-        //     } else {
-        //         res.status(404).json("Administrator account not found.");
-        //     }
-        // })
-        // .catch(error => console.log(error));
-        res.status(400);
+                } else {
+                    res.status(404).json("Administrator account not found.");
+                }
+            })
+            .catch(error => console.log(error));
+        } else {
+            res.status(400).json("Session is undefined");
+        }
 
     } catch (error) {
         console.log(error);
