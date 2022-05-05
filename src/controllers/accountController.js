@@ -9,6 +9,7 @@ const login = async (req, res) => {
         const authentication = generateAuthToken();
         admin.auth_token = authentication.token;
         admin.auth_token_expires = authentication.expiration;
+        req.session.token = authentication.token;
 
         await db.promise().query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id])
                 .then(() => {
