@@ -25,7 +25,7 @@ const login = async (req, res) => {
 
 const validateLogin = async (req, res) => {
     try {
-
+        console.log(req.user);
         await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id])
         .then((result) => {
             const admin = result[0][0];
