@@ -1,6 +1,7 @@
 // IMPORTING DEPENDENCIES
 const express = require('express');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const passport = require('passport');
 const connection = require('./src/configs/db');
@@ -38,16 +39,17 @@ app.use(cors({
 
 // SESSION SETUP
 const sessionStore = new MySQLStore(config);
+app.use(cookieParser());
 app.use(session({
     secret: process.env.SESS_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: sessionStore,
-    cookie: {
-        httpOnly: false,
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24     // one day
-    }
+    // store: sessionStore,
+    // cookie: {
+    //     httpOnly: false,
+    //     secure: false,
+    //     maxAge: 1000 * 60 * 60 * 24     // one day
+    // }
 }));
 
 // SETTING UP AUTHENTICATION
