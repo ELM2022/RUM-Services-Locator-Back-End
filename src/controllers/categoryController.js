@@ -4,6 +4,7 @@ const db = require('../configs/db').pool;
 
 const addCategory = async (req, res) => {
     try {
+        console.log(req.body);
         const { category_name } = req.body;
 
         db.query(
@@ -73,8 +74,8 @@ const addOfficeCategories = async (req, res) => {
         
         const categories = req.body.categories;
 
-        categories.map((category) => {
-            const { category_id } = category;
+        categories.map((category_id) => {
+            // const { category_id } = category;
 
             db.query(
                 "INSERT INTO Office_Category (category_id, office_id) VALUES (?, ?)",
@@ -88,7 +89,7 @@ const addOfficeCategories = async (req, res) => {
             );
         });
 
-        res.status(200).json("Office categories inserted.");
+        res.status(201).json("Office categories inserted.");
 
     } catch (error) {
         console.log(error);
