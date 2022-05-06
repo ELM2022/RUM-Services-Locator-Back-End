@@ -31,7 +31,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // app.use(cors());
 app.use(cors({
-    origin: (process.env.NODE_ENV === "production") ? "https://rumsl-admin.herokuapp.com" : "http://localhost:3000",
+    // origin: (process.env.NODE_ENV === "production") ? "https://rumsl-admin.herokuapp.com" : "http://localhost:3000",
+    origin: "http://localhost:3000",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
     // exposedHeaders: ["set-cookie"],
