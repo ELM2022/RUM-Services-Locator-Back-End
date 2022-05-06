@@ -2,13 +2,16 @@ const db = require('../configs/db').pool;
 
 const addOffice = async(req, res) => {
     try {
-        const { office_name, office_description, office_schedule, office_latitude, office_longitude, office_floor_number, 
-                office_room_code, office_email, office_phone_number, office_extension_number, office_website } = req.body.office;
+        const { office_name, office_description, office_schedule, office_latitude, office_longitude, office_entrance_latitude, office_entrance_longitude, 
+                office_route_instructions, office_search_description , office_floor_number, office_room_code, office_email, office_phone_number, 
+                office_extension_number, office_website } = req.body.office;
 
         db.query(
-            "INSERT INTO Office (office_name, office_description, office_schedule, office_latitude, office_longitude, office_floor_number, office_room_code, office_email, office_phone_number, office_extension_number, office_website, office_active_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [office_name, office_description, office_schedule, office_latitude, office_longitude, office_floor_number, 
-                office_room_code, office_email, office_phone_number, office_extension_number, office_website, 1],
+            `INSERT INTO Office (office_name, office_description, office_schedule, office_latitude, office_longitude, office_entrance_latitude, office_entrance_longitude, 
+            office_route_instructions, office_search_description, office_floor_number, office_room_code, office_email, office_phone_number, office_extension_number, 
+            office_website, office_active_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [office_name, office_description, office_schedule, office_latitude, office_longitude, office_entrance_latitude, office_entrance_longitude, office_route_instructions, 
+            office_search_description, office_floor_number, office_room_code, office_email, office_phone_number, office_extension_number, office_website, 1],
             (error, results) => {
                 if (error) {
                     if (error.code === "ER_DUP_ENTRY") {
@@ -149,13 +152,16 @@ const getOfficeByCategory = async (req, res) => {
 
 const updateOffice = async(req, res) => {
     try {
-        const { office_name, office_description, office_schedule, office_latitude, office_longitude, office_floor_number, 
-            office_room_code, office_email, office_phone_number, office_extension_number, office_website, office_active_status } = req.body.office;
+        const { office_name, office_description, office_schedule, office_latitude, office_longitude, office_entrance_latitude, office_entrance_longitude, 
+            office_route_instructions, office_search_description , office_floor_number, office_room_code, office_email, office_phone_number, 
+            office_extension_number, office_website } = req.body.office;
         
         db.query(
-            "UPDATE Office SET office_name = ?, office_description = ?, office_schedule = ?, office_latitude = ?, office_longitude = ?, office_floor_number = ?, office_room_code = ?, office_email = ?, office_phone_number = ?, office_extension_number = ?, office_website = ?, office_active_status = ? WHERE office_id = ?",
-            [office_name, office_description, office_schedule, office_latitude, office_longitude, office_floor_number, 
-                office_room_code, office_email, office_phone_number, office_extension_number, office_website, office_active_status, req.params.oid],
+            `UPDATE Office SET office_name = ?, office_description = ?, office_schedule = ?, office_latitude = ?, office_longitude = ?, office_entrance_latitude = ?, 
+            office_entrance_longitude = ?, office_route_instructions = ?, office_search_description = ?, office_floor_number = ?, office_room_code = ?, office_email = ?, 
+            office_phone_number = ?, office_extension_number = ?, office_website = ?, office_active_status = ? WHERE office_id = ?`,
+            [office_name, office_description, office_schedule, office_latitude, office_longitude, office_entrance_latitude, office_entrance_longitude, office_route_instructions, 
+                office_search_description, office_floor_number, office_room_code, office_email, office_phone_number, office_extension_number, office_website, 1, req.params.oid],
             (error, results) => {
                 if (error) throw error;
                 res.status(200).json({
