@@ -118,7 +118,7 @@ const getAllOfficeCategories = async (req, res) => {
 
 const getCategoriesByOfficeId = async (req, res) => {
     try {
-        const sql = `SELECT category_name FROM Category
+        const sql = `SELECT category_id, category_name FROM Category
                     INNER JOIN Office_Category ON Category.category_id = Office_Category.category_id
                     WHERE office_id = ?`;
 
