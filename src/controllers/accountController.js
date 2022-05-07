@@ -137,7 +137,7 @@ const resetPassword = async(req, res) => {
         .then(async (result) => {
             if (result[0] !== undefined) {
                 const admin = result[0][0];
-                admin.admin_password = getHashPassword(req.body.admin_password);
+                admin.admin_password = getHashPassword(req.body.administrator.admin_password);
                 admin.reset_passw_token = undefined;
                 admin.reset_passw_expires = undefined;
 
