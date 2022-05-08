@@ -115,7 +115,7 @@ const getPendingAdminByEmail = async(req, res) => {
     try {
         db.query(
             "SELECT * FROM Pending_Admin WHERE pending_email = ?",
-            [req.query.email],
+            [req.params.email],
             (error, results) => {
                 if (error) throw error;
                 res.status(200).json({
