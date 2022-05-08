@@ -24,7 +24,7 @@ const getAllAdminUpdates = async(req, res) => {
     try {
         db.query(
             `SELECT editor_admin_id, 
-            (SELECT admin_name FROM Administrator WHERE admin_id = editor_admin_id) AS editor_admin_name,
+            (SELECT (admin_name + ' ' + admin_last_name) FROM Administrator WHERE admin_id = editor_admin_id) AS editor_admin_name,
             updated_admin_id, admin_email AS updated_admin_email, admin_name AS updated_admin_name, admin_last_name AS updated_admin_last_name, update_datetime, update_justification 
             FROM Admin_Record_Updates 
             INNER JOIN Administrator ON Admin_Record_Updates.updated_admin_id = Administrator.admin_id`,
