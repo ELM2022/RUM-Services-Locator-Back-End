@@ -121,7 +121,7 @@ const getPendingAdminByEmail = async(req, res) => {
                 res.status(200).json({
                     status: "success",
                     data: {
-                        pending_admin: results
+                        pending_admin: results[0]
                     }
                 });
             }
