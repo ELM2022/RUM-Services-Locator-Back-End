@@ -202,7 +202,7 @@ const getAllOfficeCategoryMemberships = async (req, res) => {
                     INNER JOIN Office ON Office.office_id = Office_Category.office_id
                     WHERE Category.category_id = ?`;
 
-        db.query('SELECT * FROM Category', (error, categories) => {
+        db.query('SELECT * FROM Category ORDER BY category_name ASC', (error, categories) => {
             if (error) throw error;
             categories.map((category) => {
                 const {category_id, category_name} = category;

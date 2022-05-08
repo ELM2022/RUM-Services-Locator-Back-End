@@ -33,7 +33,7 @@ const addCategory = async (req, res) => {
 const getAllCategories = async (req, res) => {
     try {
         db.query(
-            "SELECT * FROM Category",
+            "SELECT * FROM Category ORDER BY category_name ASC",
             (error, results) => {
                 if (error) throw error;
                 res.status(200).json({
