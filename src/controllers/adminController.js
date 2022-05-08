@@ -12,7 +12,7 @@ const addAdmin = async(req, res) => {
             (error, results) => {
                 if (error) {
                     if (error.code === "ER_DUP_ENTRY") {
-                        res.status(404).json("Administrator account already exists.");
+                        res.status(400).json("Administrator account already exists.");
                     }
                     else throw error;
                 }

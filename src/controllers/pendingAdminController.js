@@ -5,23 +5,31 @@ const addPendingAdmin = async(req, res) => {
     try {
         const { admin_id, pending_email } = req.body.pending_admin;
 
-        db.query(
-            "INSERT INTO Pending_Admin (admin_id, pending_email, pending_status) VALUES (?, ?, ?)", [admin_id, pending_email, 1],
-            (error, results) => {
-                if (error) {
-                    if (error.code === "ER_DUP_ENTRY") {
-                        res.status(404).json("Pending administrator account already exists.");
+        db.query("SELECT * FROM Pending_Admin WHERE pending_email = ?", [pending_email],
+        (error, result) => {
+            if (error) throw error;
+            if (result[0] === undefined) {
+                db.query(
+                    "INSERT INTO Pending_Admin (admin_id, pending_email, pending_status) VALUES (?, ?, ?)", [admin_id, pending_email, 1],
+                    (error, results) => {
+                        if (error) {
+                            if (error.code === "ER_DUP_ENTRY") {
+                                res.status(400).json("Pending administrator account already exists.");
+                            }
+                            else throw error;
+                        }
+                        else {
+                            res.status(201).json({
+                                status: "success",
+                                result: results
+                            });
+                        }
                     }
-                    else throw error;
-                }
-                else {
-                    res.status(201).json({
-                        status: "success",
-                        result: results
-                    });
-                }
+                );
+            } else {
+                res.status(400).json("Pending administrator account already exists.");
             }
-        );
+        });
 
     } catch (error) {
         console.log(error);
@@ -103,6 +111,27 @@ const getPendingAdminById = async(req, res) => {
     }
 }
 
+const getPendingAdminByEmail = async(req, res) => {
+    try {
+        db.query(
+            "SELECT * FROM Pending_Admin WHERE pending_email = ?",
+            [req.query.email],
+            (error, results) => {
+                if (error) throw error;
+                res.status(200).json({
+                    status: "success",
+                    data: {
+                        pending_admin: results[0]
+                    }
+                });
+            }
+        );
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const deletePendingAdmin = async(req, res) => {
     try {
         db.query(
@@ -124,6 +153,7 @@ const deletePendingAdmin = async(req, res) => {
 module.exports = {
     addPendingAdmin,
     getPendingAdminById,
+    getPendingAdminByEmail,
     getAllPendingAdmins,
     getUnresolvedPendingAdmins,
     deletePendingAdmin
