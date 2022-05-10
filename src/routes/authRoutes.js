@@ -8,15 +8,22 @@ const { validateRoute } = require('../middlewares/validateMiddleware');
 const { loginTokenRules, recoverPasswRules, resetPasswRules } = require('../middlewares/validationRules/accountValidation');
 const { adminPostRules } = require('../middlewares/validationRules/adminValidation');
 
+// router.post('/login', 
+//     passport.authenticate('local'), accountController.login, (req, res) => {
+//         res.redirect('RUMSL/login-validate'); // for testing purposes
+//     }
+// );
+
 router.post('/login', 
-    passport.authenticate('local'), accountController.login, (req, res) => {
+    accountController.login, (req, res) => {
         res.redirect('RUMSL/login-validate'); // for testing purposes
     }
 );
 
 router.post('/register', adminPostRules(), validateRoute, adminController.addAdmin);
 // router.post('/login/validate', loginTokenRules(), validateRoute, accountController.validateLogin);
-router.get('/login/validate', accountController.validateLogin);
+// router.get('/login/validate', accountController.validateLogin);
+router.post('/login/validate', accountController.validateLogin);
 router.get('/login/validate/resend', accountController.login);
 router.post('/recover', recoverPasswRules(), validateRoute, accountController.recoverPassword);
 router.post('/reset/:token', resetPasswRules(), validateRoute, accountController.resetPassword);

@@ -39,7 +39,8 @@ const sendEmail = (email, subject, text) => {
 
 const emailVerification = async(req) => {
     try {
-        const account = await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.user.admin_id]);
+        // console.log(req.session.data);
+        const account = await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.session.data.admin_id]);
         const { admin_email, admin_name, auth_token } = account[0][0]; 
         const token = auth_token;
         
