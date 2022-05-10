@@ -1,8 +1,8 @@
 // IMPORTING DEPENDENCIES
 const express = require('express');
 const session = require('express-session');
-const cookieSession = require('cookie-session');
-const cookieParser = require('cookie-parser');
+// const cookieSession = require('cookie-session');
+// const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const passport = require('passport');
 const connection = require('./src/configs/db');
