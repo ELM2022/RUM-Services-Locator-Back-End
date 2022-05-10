@@ -44,7 +44,7 @@ const sessionStore = new MySQLStore(config);
 app.use(session({
     secret: process.env.SESS_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: sessionStore,
     cookie: {
         httpOnly: (process.env.NODE_ENV === "production") ? true : false,
