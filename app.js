@@ -1,6 +1,7 @@
 // IMPORTING DEPENDENCIES
 const express = require('express');
 const session = require('express-session');
+const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const passport = require('passport');
@@ -29,6 +30,7 @@ const pool = connection.pool;
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.set('trust proxy', 1);
 // app.use(cors());
 app.use(cors({
     // origin: (process.env.NODE_ENV === "production") ? "https://rumsl-admin.herokuapp.com" : "http://localhost:3000",
@@ -52,6 +54,12 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24     // one day
     }
 }));
+
+// app.use(cookieSession({
+//     secret: process.env.SESS_SECRET,
+//     maxAge: 1000 * 60 * 60 * 24,     // one day
+
+// }));
 
 // SETTING UP AUTHENTICATION
 app.use(passport.initialize());
