@@ -28,40 +28,42 @@ const pool = connection.pool;
 
 // CREATING EXPRESS APPLICATION
 const app = express();
-app.enable('trust proxy');
+app.set('trust proxy', true);
+// app.enable('trust proxy');
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // app.set('trust proxy', 1);
 // app.use(cors());
 app.use(cors({
     // origin: (process.env.NODE_ENV === "production") ? "https://rumsl-admin.herokuapp.com" : "http://localhost:3000",
-    origin: "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
+    origin: ["http://localhost:3000"],
     // exposedHeaders: ["set-cookie"],
 }));
 
 // SESSION SETUP
 const sessionStore = new MySQLStore(config);
 // app.use(cookieParser());
-// app.use(session({
-//     secret: process.env.SESS_SECRET,
-//     resave: false,
-//     saveUninitialized: false,
-//     store: sessionStore,
-//     cookie: {
-//         httpOnly: (process.env.NODE_ENV === "production") ? true : false,
-//         secure: (process.env.NODE_ENV === "production") ? true : false,
-//         maxAge: 1000 * 60 * 60 * 24     // one day
-//     }
-// }));
-
-app.use(cookieSession({
+app.use(session({
     secret: process.env.SESS_SECRET,
-    maxAge: 1000 * 60 * 60 * 24,     // one day
-    httpOnly: false,
-    secure: false
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    cookie: {
+        sameSite: 'none',
+        httpOnly: (process.env.NODE_ENV === "production") ? true : false,
+        // secure: (process.env.NODE_ENV === "production") ? true : false,
+        secure: false,
+        maxAge: 1000 * 60 * 60 * 24     // one day
+    }
 }));
+
+// app.use(cookieSession({
+//     secret: process.env.SESS_SECRET,
+//     maxAge: 1000 * 60 * 60 * 24,     // one day
+//     httpOnly: false,
+//     secure: false
+// }));
 
 // SETTING UP AUTHENTICATION
 // app.use(passport.initialize());
