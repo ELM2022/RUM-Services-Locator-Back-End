@@ -144,10 +144,10 @@ const resetPassword = async(req, res) => {
 
 const logout = async (req, res) => {
 
-    await db.promise().query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [null, null, req.user.admin_id])
+    await db.promise().query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [null, null, req.session.data.admin_id])
     .then(() => {
         req.logout();
-        res.redirect('http://localhost:3000/Login_Screen');
+        // res.redirect('http://localhost:3000/Login_Screen');
     })
     .catch(error => res.status(500).json({ message: error.message }));
 
