@@ -3,51 +3,51 @@ const { getHashPassword, generateAuthToken, generatePasswReset } = require('../u
 const { emailVerification, emailPasswReset, emailResetConfirmation } = require('../services/emailService');
 const { isValidPassword } = require('../utils/passwordUtils');
 
+// const login = async (req, res) => {
+//     try {
+//         const { username, password } = req.body;
+
+//         db.query("SELECT * FROM Administrator WHERE admin_email = ?", [username], 
+//         (error, result) => {
+//             if (error) throw error;
+//             if (result[0] !== undefined) {
+//                 const admin = result[0];
+//                 isValidPassword(password, admin.admin_password).then((isValid) => {
+//                     if (isValid) {
+//                         const authentication = generateAuthToken();
+//                         admin.auth_token = authentication.token;
+//                         admin.auth_token_expires = authentication.expiration;
+//                         req.session.data = admin;
+
+//                         db.query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id],
+//                         (error, result) => {
+//                             if (error) throw error;
+//                             emailVerification(req).then(() => {
+//                                 res.status(200).json("Successful administrator login request.");
+//                             });
+//                         });
+
+//                     } else {
+//                         res.status(404).json("Incorrect username or password.");
+//                     }
+//                 });
+//             } else {
+//                 res.status(404).json("Incorrect username or password.");
+//             }
+//         });
+
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
 const login = async (req, res) => {
     try {
-        const { username, password } = req.body;
-
-        db.query("SELECT * FROM Administrator WHERE admin_email = ?", [username], 
-        (error, result) => {
-            if (error) throw error;
-            if (result[0] !== undefined) {
-                const admin = result[0];
-                isValidPassword(password, admin.admin_password).then((isValid) => {
-                    if (isValid) {
-                        const authentication = generateAuthToken();
-                        admin.auth_token = authentication.token;
-                        admin.auth_token_expires = authentication.expiration;
-                        req.session.data = admin;
-
-                        db.query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id],
-                        (error, result) => {
-                            if (error) throw error;
-                            emailVerification(req).then(() => {
-                                res.status(200).json("Successful administrator login request.");
-                            });
-                        });
-
-                    } else {
-                        res.status(404).json("Incorrect username or password.");
-                    }
-                });
-            } else {
-                res.status(404).json("Incorrect username or password.");
-            }
-        });
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-const createAuthentication = (admin) => {
-    try {
+        const admin = req.user;
         const authentication = generateAuthToken();
         admin.auth_token = authentication.token;
         admin.auth_token_expires = authentication.expiration;
-        req.session.data = req.user;
-        console.log(req.session);
+        req.session.data = admin;
 
         db.query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id],
         (error, result) => {
@@ -56,15 +56,35 @@ const createAuthentication = (admin) => {
                 res.status(200).json("Successful administrator login request.");
             });
         });
-
     } catch (error) {
         console.log(error);
     }
 }
 
+// const createAuthentication = (admin) => {
+//     try {
+//         const authentication = generateAuthToken();
+//         admin.auth_token = authentication.token;
+//         admin.auth_token_expires = authentication.expiration;
+//         req.session.data = req.user;
+//         console.log(req.session);
+
+//         db.query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id],
+//         (error, result) => {
+//             if (error) throw error;
+//             emailVerification(req).then(() => {
+//                 res.status(200).json("Successful administrator login request.");
+//             });
+//         });
+
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
 const validateLogin = async (req, res) => {
     try {
-        // console.log(req.user);
+        console.log(req.user);
         // console.log(req.session);
         console.log(req.session.data);
         // console.log(req._passport);

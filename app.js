@@ -1,13 +1,11 @@
 // IMPORTING DEPENDENCIES
 const express = require('express');
 const session = require('express-session');
-const cookieSession = require('cookie-session');
-// const cookieParser = require('cookie-parser');
 const cors = require('cors');
-// const passport = require('passport');
+const passport = require('passport');
 const connection = require('./src/configs/db');
 const MySQLStore = require('express-mysql-session')(session);
-// require('./src/configs/passport');
+require('./src/configs/passport');
 
 // IMPORTING ROUTES
 const adminRoutes = require('./src/routes/adminRoutes');
@@ -29,21 +27,16 @@ const pool = connection.pool;
 // CREATING EXPRESS APPLICATION
 const app = express();
 app.set('trust proxy', true);
-// app.enable('trust proxy');
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-// app.set('trust proxy', 1);
-// app.use(cors());
 app.use(cors({
     // origin: (process.env.NODE_ENV === "production") ? "https://rumsl-admin.herokuapp.com" : "http://localhost:3000",
     credentials: true,
     origin: ["http://localhost:3000"],
-    // exposedHeaders: ["set-cookie"],
 }));
 
 // SESSION SETUP
 const sessionStore = new MySQLStore(config);
-// app.use(cookieParser());
 app.use(session({
     secret: process.env.SESS_SECRET,
     resave: false,
@@ -53,22 +46,13 @@ app.use(session({
         sameSite: 'none',
         httpOnly: (process.env.NODE_ENV === "production") ? true : false,
         secure: (process.env.NODE_ENV === "production") ? true : false,
-        // httpOnly: true,
-        // secure: true,
         maxAge: 1000 * 60 * 60 * 24     // one day
     }
 }));
 
-// app.use(cookieSession({
-//     secret: process.env.SESS_SECRET,
-//     maxAge: 1000 * 60 * 60 * 24,     // one day
-//     httpOnly: false,
-//     secure: false
-// }));
-
 // SETTING UP AUTHENTICATION
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 // ADDING ROUTES
 app.use(header, adminRoutes);
