@@ -1,6 +1,6 @@
 const db = require('../configs/db').pool;
 const { getHashPassword, generateAuthToken, generatePasswReset } = require('../utils/passwordUtils');
-const { emailVerification, emailPasswReset, emailResetConfirmation } = require('../services/emailService');
+const { emailVerification, emailPasswReset, emailResetConfirmation, emailAuthTokenResend } = require('../services/emailService');
 
 const login = async (req, res) => {
     try {
@@ -14,9 +14,31 @@ const login = async (req, res) => {
         (error, result) => {
             if (error) throw error;
             emailVerification(req).then(() => {
-                res.status(200).json("Successful administrator login request.");
+                // res.status(200).json("Successful administrator login request.");
+                res.status(200).json({
+                    admin_id: admin.admin_id,
+                    admin_email: admin.admin_email
+                });
             });
         });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const tokenResend = async (req, res) => {
+    try {
+        const { admin_id, admin_email } = req.body;
+        const authentication = generateAuthToken();
+
+        db.query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [authentication.token, authentication.expiration, admin_id],
+        (error, result) => {
+            if (error) throw error;
+            emailAuthTokenResend(admin_email, authentication.token).then(() => {
+                res.status(200).json("Successful authentication login resend.");
+            });
+        });
+
     } catch (error) {
         console.log(error);
     }
@@ -144,13 +166,15 @@ const resetPassword = async(req, res) => {
 
 const logout = async (req, res) => {
     try {
-        console.log(req.session);
         if (req.session.data !== undefined) {
             await db.promise().query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [null, null, req.session.data.admin_id])
             .then(() => {
                 req.logout();
             })
             .catch(error => res.status(500).json({ message: error.message }));
+        } else {
+            req.session.destroy();
+            res.status(200).json("Successfully logged out.");
         }
     } catch (error) {
         console.log(error);
@@ -163,5 +187,6 @@ module.exports = {
     recoverPassword,
     validatePasswReset,
     resetPassword,
-    logout
+    logout,
+    tokenResend
 }

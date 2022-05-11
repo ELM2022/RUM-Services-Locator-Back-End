@@ -11,7 +11,7 @@ const { adminPostRules } = require('../middlewares/validationRules/adminValidati
 router.post('/login', passport.authenticate('local'), accountController.login);
 router.post('/register', adminPostRules(), validateRoute, adminController.addAdmin);
 router.post('/login/validate', loginTokenRules(), validateRoute, accountController.validateLogin);
-router.get('/login/validate/resend', accountController.login);
+router.post('/login/validate/resend', accountController.tokenResend);
 router.post('/recover', recoverPasswRules(), validateRoute, accountController.recoverPassword);
 router.post('/reset/:token', resetPasswRules(), validateRoute, accountController.resetPassword);
 router.get('/reset/:token', accountController.validatePasswReset);

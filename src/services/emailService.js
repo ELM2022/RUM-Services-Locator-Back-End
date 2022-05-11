@@ -36,10 +36,31 @@ const sendEmail = (email, subject, text) => {
 
 const emailVerification = async(req) => {
     try {
-        // console.log(req.session.data);
         const account = await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.session.data.admin_id]);
         const { admin_email, admin_name, auth_token } = account[0][0]; 
         const token = auth_token;
+        
+        if (admin_email !== undefined && admin_name !== undefined) {
+
+            const subject = "RUM Services Locator: Validación de Acceso";
+            const text = `Hola ${admin_name},\nPor favor ingrese este código de seis dígitos a la plataforma, para validar su acceso.\n\nCódigo: ${token}\n`;
+            
+            sendEmail(admin_email, subject, text);
+
+        }
+        else {
+            console.log('Admin Email Not Found');
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const emailAuthTokenResend = async(email, token) => {
+    try {
+        const account = await db.promise().query("SELECT * FROM Administrator WHERE admin_email = ?", [email]);
+        const { admin_email, admin_name } = account[0][0];
         
         if (admin_email !== undefined && admin_name !== undefined) {
 
@@ -98,5 +119,6 @@ module.exports = {
     sendEmail,
     emailVerification,
     emailPasswReset,
-    emailResetConfirmation
+    emailResetConfirmation,
+    emailAuthTokenResend
 }
