@@ -30,9 +30,8 @@ app.set('trust proxy', true);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors({
-    // origin: (process.env.NODE_ENV === "production") ? "https://rumsl-admin.herokuapp.com" : "http://localhost:3000",
     credentials: true,
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", process.env.ADMIN_URL_PROD],
 }));
 
 // SESSION SETUP

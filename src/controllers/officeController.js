@@ -200,13 +200,13 @@ const getAllOfficeCategoryMemberships = async (req, res) => {
         const sql = `SELECT * FROM Category
                     INNER JOIN Office_Category ON Office_Category.category_id = Category.category_id
                     INNER JOIN Office ON Office.office_id = Office_Category.office_id
-                    WHERE Category.category_id = ?`;
+                    WHERE Category.category_id = ? AND Office.office_active_status = ?`;
 
         db.query('SELECT * FROM Category ORDER BY category_name ASC', (error, categories) => {
             if (error) throw error;
             categories.map((category) => {
                 const {category_id, category_name} = category;
-                db.query(sql, [category_id], (error, offices) => {
+                db.query(sql, [category_id, 1], (error, offices) => {
                     if (error) throw error;
                     category_memberships.push({
                         category_name: category_name,
