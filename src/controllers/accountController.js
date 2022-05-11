@@ -143,14 +143,18 @@ const resetPassword = async(req, res) => {
 }
 
 const logout = async (req, res) => {
-
-    await db.promise().query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [null, null, req.session.data.admin_id])
-    .then(() => {
-        req.logout();
-        // res.redirect('http://localhost:3000/Login_Screen');
-    })
-    .catch(error => res.status(500).json({ message: error.message }));
-
+    try {
+        console.log(req.session);
+        if (req.session.data !== undefined) {
+            await db.promise().query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [null, null, req.session.data.admin_id])
+            .then(() => {
+                req.logout();
+            })
+            .catch(error => res.status(500).json({ message: error.message }));
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 module.exports = {
