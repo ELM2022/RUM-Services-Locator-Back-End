@@ -115,10 +115,25 @@ const emailResetConfirmation = async(email) => {
     }
 }
 
+const emailPendingAdmin = async(email) => {
+    try {
+        const host = (process.env.NODE_ENV === 'production') ? process.env.ADMIN_URL_PROD : process.env.ADMIN_URL_DEV;
+        const link = `${host}/Create_Account`;
+        const subject = "RUM Services Locator: Acceso a Sistema Otorgado";
+        const text = `Usted ha sido otorgado acceso de administrador al sistema de 'RUM Services Locator'.\nPara registrar su cuenta, acceda al sistema utilizando el siguiente enlace.\n\nEnlace: ${link}`;
+
+        sendEmail(email, subject, text);
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     sendEmail,
     emailVerification,
     emailPasswReset,
     emailResetConfirmation,
-    emailAuthTokenResend
+    emailAuthTokenResend,
+    emailPendingAdmin
 }

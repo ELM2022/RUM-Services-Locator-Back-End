@@ -1,5 +1,6 @@
 const db = require('../configs/db').pool;
 // const { adminExists } = require('../controllers/adminController');
+const { emailPendingAdmin } = require('../services/emailService');
 
 const addPendingAdmin = async(req, res) => {
     try {
@@ -19,9 +20,11 @@ const addPendingAdmin = async(req, res) => {
                             else throw error;
                         }
                         else {
-                            res.status(201).json({
-                                status: "success",
-                                result: results
+                            emailPendingAdmin(pending_email).then(() => {
+                                res.status(201).json({
+                                    status: "success",
+                                    result: results
+                                });
                             });
                         }
                     }
