@@ -1,13 +1,13 @@
 // IMPORTING DEPENDENCIES
 const express = require('express');
 const session = require('express-session');
-// const cookieSession = require('cookie-session');
+const cookieSession = require('cookie-session');
 // const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const passport = require('passport');
+// const passport = require('passport');
 const connection = require('./src/configs/db');
 const MySQLStore = require('express-mysql-session')(session);
-require('./src/configs/passport');
+// require('./src/configs/passport');
 
 // IMPORTING ROUTES
 const adminRoutes = require('./src/routes/adminRoutes');
@@ -44,27 +44,28 @@ app.use(cors({
 // SESSION SETUP
 const sessionStore = new MySQLStore(config);
 // app.use(cookieParser());
-app.use(session({
-    secret: process.env.SESS_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    store: sessionStore,
-    cookie: {
-        httpOnly: (process.env.NODE_ENV === "production") ? true : false,
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24     // one day
-    }
-}));
-
-// app.use(cookieSession({
+// app.use(session({
 //     secret: process.env.SESS_SECRET,
-//     maxAge: 1000 * 60 * 60 * 24,     // one day
-
+//     resave: false,
+//     saveUninitialized: false,
+//     store: sessionStore,
+//     cookie: {
+//         httpOnly: (process.env.NODE_ENV === "production") ? true : false,
+//         secure: (process.env.NODE_ENV === "production") ? true : false,
+//         maxAge: 1000 * 60 * 60 * 24     // one day
+//     }
 // }));
 
+app.use(cookieSession({
+    secret: process.env.SESS_SECRET,
+    maxAge: 1000 * 60 * 60 * 24,     // one day
+    httpOnly: false,
+    secure: false
+}));
+
 // SETTING UP AUTHENTICATION
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 // ADDING ROUTES
 app.use(header, adminRoutes);
