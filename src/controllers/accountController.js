@@ -14,7 +14,6 @@ const login = async (req, res) => {
         (error, result) => {
             if (error) throw error;
             emailVerification(req).then(() => {
-                // res.status(200).json("Successful administrator login request.");
                 res.status(200).json({
                     admin_id: admin.admin_id,
                     admin_email: admin.admin_email
@@ -122,7 +121,8 @@ const validatePasswReset = async(req, res) => {
         await db.promise().query("SELECT * FROM Administrator WHERE reset_passw_token = ? AND reset_passw_expires >= ?", [req.params.token, new Date(Date.now())])
         .then(result => {
             if (result[0] !== undefined) {
-                res.redirect(`http://localhost:3000/Password_Reset/${req.params.token}`);
+                const host = (process.env.NODE_ENV === 'production') ? process.env.ADMIN_URL_PROD : process.env.ADMIN_URL_DEV
+                res.redirect(`${host}/Password_Reset/${req.params.token}`);
 
             } else {
                 res.status(400).json("Password reset token is invalid or has expired.");
