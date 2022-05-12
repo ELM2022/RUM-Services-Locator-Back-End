@@ -1,73 +1,40 @@
 const db = require('../configs/db').pool;
 const { getHashPassword, generateAuthToken, generatePasswReset } = require('../utils/passwordUtils');
-const { emailVerification, emailPasswReset, emailResetConfirmation } = require('../services/emailService');
-const { isValidPassword } = require('../utils/passwordUtils');
+const { emailVerification, emailPasswReset, emailResetConfirmation, emailAuthTokenResend } = require('../services/emailService');
 
 const login = async (req, res) => {
     try {
-        const { username, password } = req.body;
-
-        db.query("SELECT * FROM Administrator WHERE admin_email = ?", [username], 
-        (error, result) => {
-            if (error) throw error;
-            if (result[0] !== undefined) {
-                const admin = result[0];
-                isValidPassword(password, admin.admin_password).then((isValid) => {
-                    if (isValid) {
-                        const authentication = generateAuthToken();
-                        admin.auth_token = authentication.token;
-                        admin.auth_token_expires = authentication.expiration;
-                        req.session.data = admin;
-
-                        db.query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id],
-                        (error, result) => {
-                            if (error) throw error;
-                            emailVerification(req).then(() => {
-                                // FOR TESTING PURPOSES
-                                res.redirect('http://localhost:3000/RUMSL/login-validate');
-                            });
-                        });
-
-                    } else {
-                        res.status(404).json("Incorrect username or password.");
-                    }
-                });
-            } else {
-                res.status(404).json("Incorrect username or password.");
-            }
-        });
-
-        // const admin = req.user;
-        // const authentication = generateAuthToken();
-        // admin.auth_token = authentication.token;
-        // admin.auth_token_expires = authentication.expiration;
-
-        // db.query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id])
-        //         .then(() => {
-        //             emailVerification(req).then(() => {
-        //                 // FOR TESTING PURPOSES
-        //                 res.redirect('http://localhost:3000/RUMSL/login-validate');
-        //             });
-        //         })
-        //         .catch(error => res.status(500).json({ message: error.message }));
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-const createAuthentication = (admin) => {
-    try {
+        const admin = req.user;
         const authentication = generateAuthToken();
         admin.auth_token = authentication.token;
         admin.auth_token_expires = authentication.expiration;
+        req.session.data = admin;
 
         db.query("UPDATE Administrator SET ? WHERE admin_id = ?", [admin, admin.admin_id],
         (error, result) => {
             if (error) throw error;
             emailVerification(req).then(() => {
-                // FOR TESTING PURPOSES
-                res.redirect('http://localhost:3000/RUMSL/login-validate');
+                res.status(200).json({
+                    admin_id: admin.admin_id,
+                    admin_email: admin.admin_email
+                });
+            });
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const tokenResend = async (req, res) => {
+    try {
+        const { admin_id, admin_email } = req.body;
+        const authentication = generateAuthToken();
+
+        db.query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [authentication.token, authentication.expiration, admin_id],
+        (error, result) => {
+            if (error) throw error;
+            emailAuthTokenResend(admin_email, authentication.token).then(() => {
+                res.status(200).json("Successful authentication login resend.");
             });
         });
 
@@ -198,17 +165,29 @@ const resetPassword = async(req, res) => {
 
 const logout = async (req, res) => {
 
-    await db.promise().query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [null, null, req.user.admin_id])
-    .then(() => {
-        req.logout();
-        res.redirect('http://localhost:3000/RUMSL/login');
-    })
-    .catch(error => res.status(500).json({ message: error.message }));
+    try {
+
+        if (req.session.data !== undefined) {
+            await db.promise().query("UPDATE Administrator SET auth_token = ?, auth_token_expires = ? WHERE admin_id = ?", [null, null, req.session.data.admin_id])
+            .then(() => {
+                req.logout();
+                res.redirect('http://localhost:3000/RUMSL/login');
+            })
+            .catch(error => res.status(500).json({ message: error.message }));
+        } else {
+            req.session.destroy();
+            res.status(200).json("Successfully logged out.");
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 
 module.exports = {
     login,
+    tokenResend,
     validateLogin,
     recoverPassword,
     validatePasswReset,

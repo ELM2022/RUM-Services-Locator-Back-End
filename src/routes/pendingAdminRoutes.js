@@ -7,7 +7,7 @@ const { pendingAdminPostRules } = require('../middlewares/validationRules/pendin
 
 router.get("/admin/pending/unresolved", pendingAdminController.getUnresolvedPendingAdmins);
 router.get("/admin/pending/all", pendingAdminController.getAllPendingAdmins);
-router.get("/admin/pending/:paid", pendingAdminController.getPendingAdminById);
+router.get("/admin/pending/:email", pendingAdminController.getPendingAdminByEmail);
 router.post("/admin/pending", pendingAdminPostRules(), validateRoute, pendingAdminController.addPendingAdmin);
 router.put("/admin/pending/:paid/delete", pendingAdminController.deletePendingAdmin);
 

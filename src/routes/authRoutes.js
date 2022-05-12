@@ -8,32 +8,18 @@ const { validateRoute } = require('../middlewares/validateMiddleware');
 const { loginTokenRules, recoverPasswRules, resetPasswRules } = require('../middlewares/validationRules/accountValidation');
 const { adminPostRules } = require('../middlewares/validationRules/adminValidation');
 
-// router.post('/login', 
-//     passport.authenticate('local'), accountController.login, (req, res) => {
-//         res.redirect('RUMSL/login-validate'); // for testing purposes
-//     }
-// );
-
 router.post('/login', 
-    accountController.login, (req, res) => {
+    passport.authenticate('local'), accountController.login, (req, res) => {
         res.redirect('RUMSL/login-validate'); // for testing purposes
     }
 );
 
 router.post('/register', adminPostRules(), validateRoute, adminController.addAdmin);
-// router.post('/login/validate', loginTokenRules(), validateRoute, accountController.validateLogin);
-// router.get('/login/validate', accountController.validateLogin);
-router.post('/login/validate', accountController.validateLogin);
-router.get('/login/validate/resend', accountController.login);
+router.post('/login/validate', loginTokenRules(), validateRoute, accountController.validateLogin);
+router.post('/login/validate/resend', accountController.tokenResend);
 router.post('/recover', recoverPasswRules(), validateRoute, accountController.recoverPassword);
 router.post('/reset/:token', resetPasswRules(), validateRoute, accountController.resetPassword);
 router.get('/reset/:token', accountController.validatePasswReset);
-
-// router.get('/logout', (req, res) => {
-//     req.logout();
-//     res.json("Administrator logged out.");
-// });
-
-router.get('/logout', accountController.logout);
+router.post('/logout', accountController.logout);
 
 module.exports = router;

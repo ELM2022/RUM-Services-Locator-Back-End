@@ -33,20 +33,6 @@ const addOffice = async(req, res) => {
     }
 }
 
-// const officeExists = async(office_name) => {
-//     try {
-//         await db.promise().query("SELECT * FROM Office WHERE office_name = ?", [office_name])
-//             .then((results) => {
-//                 console.log(results[0] === undefined);
-//                 return results[0] === undefined;
-//             })
-//             .catch((error) => res.status(500).json({ message: error.message }));
-
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-
 const getAllOffices = async(req, res) => {
     try {
         db.query(
@@ -200,13 +186,13 @@ const getAllOfficeCategoryMemberships = async (req, res) => {
         const sql = `SELECT * FROM Category
                     INNER JOIN Office_Category ON Office_Category.category_id = Category.category_id
                     INNER JOIN Office ON Office.office_id = Office_Category.office_id
-                    WHERE Category.category_id = ?`;
+                    WHERE Category.category_id = ? AND Office.office_active_status = ?`;
 
         db.query('SELECT * FROM Category', (error, categories) => {
             if (error) throw error;
             categories.map((category) => {
                 const {category_id, category_name} = category;
-                db.query(sql, [category_id], (error, offices) => {
+                db.query(sql, [category_id, 1], (error, offices) => {
                     if (error) throw error;
                     category_memberships.push({
                         category_name: category_name,

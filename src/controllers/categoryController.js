@@ -32,7 +32,7 @@ const addCategory = async (req, res) => {
 const getAllCategories = async (req, res) => {
     try {
         db.query(
-            "SELECT * FROM Category",
+            "SELECT * FROM Category ORDER BY category_name ASC",
             (error, results) => {
                 if (error) throw error;
                 res.status(200).json({
@@ -68,13 +68,48 @@ const getCategoryById = async (req, res) => {
     }
 }
 
+const deleteCategoryById = async (req, res) => {
+    try {
+        db.query(
+            "DELETE FROM Category WHERE category_id = ?",
+            [req.params.cid],
+            (error, results) => {
+                if (error) throw error;
+                res.status(200).json("Category deleted");
+            }
+        );
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const updateCategory = async(req, res) => {
+    try {
+        const { category_name } = req.body;
+        db.query(
+            "UPDATE Category SET category_name = ? WHERE category_id = ?",
+            [category_name, req.params.cid],
+            (error, results) => {
+                if (error) throw error;
+                res.status(200).json({
+                    status: "success",
+                    result: results
+                });
+
+            }
+        );
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const addOfficeCategories = async (req, res) => {
     try {
         
         const categories = req.body.categories;
 
-        categories.map((category) => {
-            const { category_id } = category;
+        categories.map((category_id) => {
 
             db.query(
                 "INSERT INTO Office_Category (category_id, office_id) VALUES (?, ?)",
@@ -181,6 +216,8 @@ module.exports = {
     addCategory,
     getAllCategories,
     getCategoryById,
+    deleteCategoryById,
+    updateCategory,
     addOfficeCategories,
     getAllOfficeCategories,
     getCategoriesByOfficeId,
