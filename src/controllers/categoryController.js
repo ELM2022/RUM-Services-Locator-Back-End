@@ -1,29 +1,31 @@
-const res = require('express/lib/response');
-
 const db = require('../configs/db').pool;
 
 const addCategory = async (req, res) => {
     try {
         const { category_name } = req.body;
 
-        db.query(
-            "INSERT INTO Category (category_name) VALUES (?)",
-            [category_name],
-            (error, results) => {
-                if (error) {
-                    if (error.code === "ER_DUP_ENTRY") {
-                        res.status(404).json("Category already exists.");
+        db.query('SELECT * FROM Category WHERE category_name = ? AND category_active_status = ?', [category_name, 1],
+        (error, result) => {
+            if (error) throw error;
+            if (result[0] === undefined) {
+                db.query(
+                    "INSERT INTO Category (category_name, category_active_status) VALUES (?, ?)",
+                    [category_name, 1],
+                    (error, results) => {
+                        if (error) throw error;
+                        else {
+                            res.status(201).json({
+                                status: "success",
+                                result: results
+                            });
+                        }
                     }
-                    else throw error;
-                }
-                else {
-                    res.status(201).json({
-                        status: "success",
-                        result: results
-                    });
-                }
+                );
+            } else {
+                res.status(400).json('Category already exists.');
             }
-        );
+        });
+
     } catch (error) {
         console.log(error);
     }
@@ -33,6 +35,25 @@ const getAllCategories = async (req, res) => {
     try {
         db.query(
             "SELECT * FROM Category ORDER BY category_name ASC",
+            (error, results) => {
+                if (error) throw error;
+                res.status(200).json({
+                    status: "success",
+                    data: {
+                        categories: results
+                    }
+                });
+            }
+        );
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const getAllActiveCategories = async (req, res) => {
+    try {
+        db.query(
+            "SELECT * FROM Category WHERE category_active_status = true ORDER BY category_name ASC",
             (error, results) => {
                 if (error) throw error;
                 res.status(200).json({
@@ -68,11 +89,26 @@ const getCategoryById = async (req, res) => {
     }
 }
 
+// const deleteCategoryById = async (req, res) => {
+//     try {
+//         db.query(
+//             "DELETE FROM Category WHERE category_id = ?",
+//             [req.params.cid],
+//             (error, results) => {
+//                 if (error) throw error;
+//                 res.status(200).json("Category deleted");
+//             }
+//         );
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
 const deleteCategoryById = async (req, res) => {
     try {
         db.query(
-            "DELETE FROM Category WHERE category_id = ?",
-            [req.params.cid],
+            "UPDATE Category SET category_active_status = ? WHERE category_id = ?",
+            [0, req.params.cid],
             (error, results) => {
                 if (error) throw error;
                 res.status(200).json("Category deleted");
@@ -197,10 +233,25 @@ const deleteOfficeCategoriesById = async (req, res) => {
     }
 }
 
-const deleteAllOfficeCategories = async (req, res) => {
+const deleteAllOfficeCategoriesByOfficeId = async (req, res) => {
     try {
         db.query(
             "DELETE FROM Office_Category WHERE office_id = ?",
+            [req.params.oid],
+            (error, results) => {
+                if (error) throw error;
+                res.status(200).json("Office categories deleted");
+            }
+        );
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const deleteAllOfficeCategoriesByCatId = async (req, res) => {
+    try {
+        db.query(
+            "DELETE FROM Office_Category WHERE category_id = ?",
             [req.params.oid],
             (error, results) => {
                 if (error) throw error;
@@ -222,5 +273,6 @@ module.exports = {
     getAllOfficeCategories,
     getCategoriesByOfficeId,
     deleteOfficeCategoriesById,
-    deleteAllOfficeCategories
+    deleteAllOfficeCategoriesByOfficeId,
+    deleteAllOfficeCategoriesByCatId
 }

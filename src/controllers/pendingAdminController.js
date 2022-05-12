@@ -1,28 +1,41 @@
 const db = require('../configs/db').pool;
+const { emailPendingAdmin } = require('../services/emailService');
 
 const addPendingAdmin = async(req, res) => {
     try {
         const { admin_id, pending_email } = req.body;
 
-        db.query(
-            "INSERT INTO Pending_Admin (admin_id, pending_email, pending_status) VALUES (?, ?, ?)", [admin_id, pending_email, 1],
-            (error, results) => {
-                if (error) {
-                    if (error.code === "ER_DUP_ENTRY") {
-                        res.status(404).json("Pending administrator account already exists.");
+        db.query('SELECT * FROM Administrator WHERE admin_email = ? AND admin_active_status = ?', [pending_email, 1],
+        (error, result) => {
+            if (error) throw error;
+            if (result[0] === undefined) {
+                db.query('SELECT * FROM Pending_Admin WHERE pending_email = ? AND pending_status = ?', [pending_email, 1],
+                (error, result) => {
+                    if (error) throw error;
+                    if (result[0] === undefined) {
+                        db.query(
+                            "INSERT INTO Pending_Admin (admin_id, pending_email, pending_status) VALUES (?, ?, ?)", [admin_id, pending_email, 1],
+                            (error, results) => {
+                                if (error) throw error;
+                                else {
+                                    emailPendingAdmin(pending_email).then(() => {
+                                        res.status(201).json({
+                                            status: "success",
+                                            result: results
+                                        });
+                                    });
+                                }
+                            }
+                        );
+                    } else {
+                        res.status(400).json('Administrator is already active.');
                     }
-                    else throw error;
-                }
-                else {
-                    emailPendingAdmin(pending_email).then(() => {
-                        res.status(201).json({
-                            status: "success",
-                            result: results
-                        });
-                    });
-                }
+                });
+
+            } else {
+                res.status(400).json('Administrator is already active.');
             }
-        );
+        });
 
     } catch (error) {
         console.log(error);
