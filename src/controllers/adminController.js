@@ -30,23 +30,6 @@ const addAdmin = async(req, res) => {
     }
 }
 
-// const adminExists = (admin_id = undefined, admin_email = undefined) => {
-//     try {
-//         const sql = (admin_id === undefined) ? `SELECT * FROM Administrator WHERE admin_email = ${admin_email}` : `SELECT * FROM Administrator WHERE admin_id = ${admin_id}`;
-
-//         db.query(sql, (error, results) => {
-//             if (error) {
-//                 throw error;
-//             } else {
-//                 return results[0] !== undefined;
-//             }
-//         });
-
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-
 const getAllAdmins = async(req, res) => {
     try {
         db.query(
@@ -153,6 +136,5 @@ module.exports = {
     getAllAdmins,
     getActiveAdmins,
     updateAdmin,
-    deleteAdmin,
-    // adminExists
+    deleteAdmin
 }

@@ -121,9 +121,8 @@ const emailPendingAdmin = async(email) => {
         const link = `${host}/Create_Account`;
         const subject = "RUM Services Locator: Acceso a Sistema Otorgado";
         const text = `Usted ha sido otorgado acceso de administrador al sistema de 'RUM Services Locator'.\nPara registrar su cuenta, acceda al sistema utilizando el siguiente enlace.\n\nEnlace: ${link}`;
-
+        
         sendEmail(email, subject, text);
-
     } catch (error) {
         console.log(error);
     }
@@ -146,6 +145,7 @@ const emailConfirmRegister = async(email) => { // create confirmation link/route
 module.exports = {
     sendEmail,
     emailVerification,
+    emailAuthTokenResend,
     emailPasswReset,
     emailResetConfirmation,
     emailAuthTokenResend,

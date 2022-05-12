@@ -1,5 +1,4 @@
 const db = require('../configs/db').pool;
-// const { adminExists } = require('../controllers/adminController');
 const { emailPendingAdmin } = require('../services/emailService');
 
 const addPendingAdmin = async(req, res) => {
@@ -38,20 +37,6 @@ const addPendingAdmin = async(req, res) => {
         console.log(error);
     }
 }
-
-// const pendingAdminExists = async(pending_email) => {
-//     try {
-//         await db.promise().query("SELECT * FROM Pending_Admin WHERE pending_email = ?", [pending_email])
-//             .then((results) => {
-//                 console.log(results[0] !== undefined);
-//                 return results[0] === undefined;
-//             })
-//             .catch((error) => res.status(500).json({ message: error.message }));
-
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
 
 const getAllPendingAdmins = async(req, res) => {
     try {
@@ -159,5 +144,6 @@ module.exports = {
     getPendingAdminByEmail,
     getAllPendingAdmins,
     getUnresolvedPendingAdmins,
+    getPendingAdminByEmail,
     deletePendingAdmin
 }

@@ -25,15 +25,7 @@ const adminUpdateRules = () => {
     ]
 }
 
-// const adminPasswordUpdateRules = () => {
-//     return [
-//         body('administrator.admin_password').notEmpty().isLength({ min: 5 }).isAlphanumeric('es-ES', { ignore: ' _' })
-//             .withMessage("Admin password must be alphanumeric and have a min length of 5.")
-//     ]
-// }
-
 module.exports = {
     adminPostRules,
     adminUpdateRules,
-    // adminPasswordUpdateRules
 }

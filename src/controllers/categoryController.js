@@ -84,13 +84,33 @@ const deleteCategoryById = async (req, res) => {
     }
 }
 
+const updateCategory = async(req, res) => {
+    try {
+        const { category_name } = req.body;
+        db.query(
+            "UPDATE Category SET category_name = ? WHERE category_id = ?",
+            [category_name, req.params.cid],
+            (error, results) => {
+                if (error) throw error;
+                res.status(200).json({
+                    status: "success",
+                    result: results
+                });
+
+            }
+        );
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const addOfficeCategories = async (req, res) => {
     try {
         
         const categories = req.body.categories;
 
         categories.map((category_id) => {
-            // const { category_id } = category;
 
             db.query(
                 "INSERT INTO Office_Category (category_id, office_id) VALUES (?, ?)",
@@ -198,6 +218,7 @@ module.exports = {
     getAllCategories,
     getCategoryById,
     deleteCategoryById,
+    updateCategory,
     addOfficeCategories,
     getAllOfficeCategories,
     getCategoriesByOfficeId,
