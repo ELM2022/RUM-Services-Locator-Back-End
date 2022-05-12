@@ -45,7 +45,6 @@ const tokenResend = async (req, res) => {
 
 const validateLogin = async(req, res) => {
     try {
-
         await db.promise().query("SELECT * FROM Administrator WHERE admin_id = ?", [req.session.data.admin_id])
         .then(result => {
             const admin = result[0][0];
@@ -55,16 +54,16 @@ const validateLogin = async(req, res) => {
                 const sessTokenExpiration = new Date(admin.auth_token_expires);
                 const formToken = req.body.token;
 
-                if (sessTokenExpiration > new Date(Date.now())) {
-                    if (sessToken === formToken) {
+                if (sessToken === formToken) {
+                    if (sessTokenExpiration > new Date(Date.now())) {
                         res.status(200).json("Login validated.");
                         
                     } else {
-                        res.status(400).json("Login failed: incorrect token.");
+                        res.status(401).json("Login failed: expired authentication token.");
                     }
                 }
                 else {
-                    res.status(400).json("Login failed: expired authentication token.");
+                    res.status(400).json("Login failed: incorrect token.");
                 }
 
             } else {
@@ -112,7 +111,7 @@ const validatePasswReset = async(req, res) => {
     try {
         await db.promise().query("SELECT * FROM Administrator WHERE reset_passw_token = ? AND reset_passw_expires >= ?", [req.params.token, new Date(Date.now())])
         .then(result => {
-            if (result[0] !== undefined) {
+            if (result[0][0] !== undefined) {
                 // res.status(200).json("Password reset validated.");
 
                 // FOR TESTING PURPOSES
@@ -138,7 +137,7 @@ const resetPassword = async(req, res) => {
     try {
         await db.promise().query("SELECT * FROM Administrator WHERE reset_passw_token = ? AND reset_passw_expires >= ?", [req.params.token, new Date(Date.now())])
         .then(async (result) => {
-            if (result[0] !== undefined) {
+            if (result[0][0] !== undefined) {
                 const admin = result[0][0];
                 admin.admin_password = getHashPassword(req.body.admin_password);
                 admin.reset_passw_token = undefined;
