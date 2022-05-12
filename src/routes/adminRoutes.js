@@ -7,6 +7,7 @@ const { adminPostRules, adminUpdateRules } = require('../middlewares/validationR
 
 router.get("/admin", adminController.getAllAdmins);
 router.get("/admin/active", adminController.getActiveAdmins);
+router.get("/admin/inactive", adminController.getInactiveAdmins);
 router.get("/admin/:aid", adminController.getAdminById);
 router.post("/admin", adminPostRules(), validateRoute, adminController.addAdmin);
 router.put("/admin/:aid", adminUpdateRules(), validateRoute, adminController.updateAdmin);
