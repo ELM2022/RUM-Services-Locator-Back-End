@@ -90,7 +90,8 @@ const emailPasswReset = async(email, token) => {
         
         if (admin_email !== undefined && admin_name !== undefined) {
 
-            const link = `${process.env.SERVER_URL_DEV}/reset/${token}`;
+            const url = (process.env.NODE_ENV === "production") ? process.env.SERVER_URL_PROD : process.env.SERVER_URL_DEV;
+            const link = `${url}/reset/${token}`;
             const subject = "RUM Services Locator: Restablecer Contraseña";
             const text = `Hola ${admin_name},\nPor favor haga 'click' en el siguiente enlace para restablecer su contraseña.\n\nEnlace: ${link}\n`;
             
