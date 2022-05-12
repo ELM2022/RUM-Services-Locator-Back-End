@@ -90,21 +90,6 @@ const getCategoryById = async (req, res) => {
     }
 }
 
-// const deleteCategoryById = async (req, res) => {
-//     try {
-//         db.query(
-//             "DELETE FROM Category WHERE category_id = ?",
-//             [req.params.cid],
-//             (error, results) => {
-//                 if (error) throw error;
-//                 res.status(200).json("Category deleted");
-//             }
-//         );
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-
 const deleteCategoryById = async (req, res) => {
     try {
         db.query(
@@ -267,6 +252,7 @@ const deleteAllOfficeCategoriesByCatId = async (req, res) => {
 module.exports = {
     addCategory,
     getAllCategories,
+    getAllActiveCategories,
     getCategoryById,
     deleteCategoryById,
     updateCategory,
