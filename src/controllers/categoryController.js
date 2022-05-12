@@ -253,7 +253,7 @@ const deleteAllOfficeCategoriesByCatId = async (req, res) => {
     try {
         db.query(
             "DELETE FROM Office_Category WHERE category_id = ?",
-            [req.params.oid],
+            [req.params.cid],
             (error, results) => {
                 if (error) throw error;
                 res.status(200).json("Office categories deleted");
