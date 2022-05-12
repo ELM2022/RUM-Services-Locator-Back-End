@@ -266,6 +266,7 @@ const deleteAllOfficeCategoriesByCatId = async (req, res) => {
 module.exports = {
     addCategory,
     getAllCategories,
+    getAllActiveCategories,
     getCategoryById,
     deleteCategoryById,
     updateCategory,
