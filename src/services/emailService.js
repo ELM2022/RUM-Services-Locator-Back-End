@@ -129,11 +129,26 @@ const emailPendingAdmin = async(email) => {
     }
 }
 
+const emailConfirmRegister = async(email) => { // create confirmation link/route
+    try {
+        const host = (process.env.NODE_ENV === 'production') ? process.env.ADMIN_URL_PROD : process.env.ADMIN_URL_DEV;
+        const link = ``;
+        const subject = "RUM Services Locator: Confirmación de Registro";
+        const text = `Su cuenta (${email}) ha sido registrada.\nPara confirmar el registro, haga 'click' en el siguiente enlace.\n\nEnlace: ${link}`;
+
+        sendEmail(email, subject, text);
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     sendEmail,
     emailVerification,
     emailPasswReset,
     emailResetConfirmation,
     emailAuthTokenResend,
-    emailPendingAdmin
+    emailPendingAdmin,
+    emailConfirmRegister
 }
